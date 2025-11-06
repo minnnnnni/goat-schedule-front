@@ -1,4 +1,4 @@
-# part time scheduler
+# Part Time Scheduler
 
 **사장님들을 위한 가장 간편한 알바생 근무표 관리 및 자동 생성 서비스입니다.**
 
@@ -17,49 +17,69 @@
 * **매장 관리:** 매장 기본 정보 (오픈/마감 시간, 정기 휴일) 설정
 
 ---
-## 주요 기능 상세 및 화면 구성 (App Flow)
+## 📋 주요 기능 상세 및 화면 구성 (App Flow)
 
-워크프레임을 기반으로 한 앱의 주요 기능 및 페이지 흐름입니다.
+워크프레임 및 제공된 디렉토리 구조를 기반으로 앱의 주요 기능과 페이지 흐름을 정리했습니다.
 
 ### 1. 인증 (Authentication)
-* **시작 화면 (`/`)**
-    * 카카오 로그인 버튼
-    * '다른 이메일로 시작하기' 링크 (-> `/login`)
-* **로그인 (`/login`)**
-    * 아이디/비밀번호 입력 폼
-    * 로그인 버튼, 회원가입 버튼 (-> `/signup`)
+
+* **로그인 페이지 (`/login`)**
+    * *경로: `src/app/(auth)/login/page.tsx`*
+    * 소셜 로그인(카카오 등)을 기본으로 제공합니다.
+* **이메일 로그인 (`/email-login`)**
+    * *경로: `src/app/(auth)/email-login/page.tsx`*
+    * '다른 이메일로 시작하기' 시 진입하는 페이지로, 아이디/비밀번호 입력 폼이 있습니다.
 * **회원가입 (`/signup`)**
-    * 아이디, 비밀번호, 이메일 인증 폼
-    * 회원가입 완료 버튼
+    * *경로: `src/app/(auth)/signup/page.tsx`*
+    * 이메일, 비밀번호 등을 입력받는 회원가입 폼입니다.
 
 ### 2. 초기 설정 (Onboarding)
-* **매장 정보 입력 (`/setup`)**
-    * 로그인 직후, 매장 정보가 없을 시 진입하는 페이지
-    * 매장명, 영업 요일, 오픈/마감 시간, 타임 일정 설정
 
-### 3. 메인 (캘린더 및 근무표)
-* **메인 캘린더 (`/home` 또는 `/`)**
-    * 헤더: `+ 근무표 추가` 버튼 (-> `/schedule/new`)
-    * 월간 캘린더 (`react-calendar`)
-    * 각 날짜 타일에 근무자 요약 정보 표시
-* **근무표 생성 (`/schedule/new`)**
-    * 기간 설정 (주간/월간)
-    * 반복 설정, 알바생 선택
-    * 근무표 생성/승인
-* **근무표 수정 (`/schedule/[id]/edit`)**
-    * 특정 근무 일정(시프트) 상세 수정 및 삭제
+* **매장 정보 입력 (`/onboarding/store-setup`)**
+    * *경로: `src/app/onboarding/store-setup/page.tsx`*
+    * 회원가입 또는 최초 로그인 직후, 매장 정보가 없을 시 진입하는 페이지입니다.
+    * 매장명, 영업 요일, 오픈/마감 시간 등을 설정합니다.
 
-### 4. 알바생 관리
-* **알바생 목록 (`/staff`)**
-    * 헤더: `알바생 추가 +` 버튼 (-> `/staff/new`)
-    * 등록된 알바생 카드 목록 (이름, 연락처, 근무 시간 등)
-* **알바생 추가/수정 (`/staff/new` 또는 `/staff/[id]/edit`)**
-    * 알바생 개인정보, 근무 가능 요일/시간 입력 폼
+### 3. 메인 기능 (Main App)
 
-### 5. 설정
-* **설정 (`/settings`)**
-    * 매장 정보 수정 링크
-    * 로그아웃 버튼
+* **메인 레이아웃 (공통)**
+    * *적용 경로: `/`, `/calendar`, `/employees`, `/settings`*
+    * *파일: `src/app/(main)/layout.tsx`*
+    * `src/components/layout`의 **상단 헤더(Header)**와 **하단 네비게이션(BottomNavigation)**이 공통으로 적용되는 (main) 라우트 그룹입니다.
+* **홈 화면 (`/`)**
+    * *경로: `src/app/(main)/page.tsx`*
+    * 메인 대시보드 역할을 하며, 일별 근무표(`DailyScheduleView`) 요약 및 '근무표 자동 생성' 팝업(`GenerateSchedulePopup`)을 제공합니다.
+* **근무표 자동 생성 결과 (`/generate/results`)**
+    * *경로: `src/app/generate/results/page.tsx`*
+    * 홈 화면에서 자동 생성 요청 시 이동하는 페이지로, 생성된 여러 근무표 옵션(`ScheduleResultPicker`) 중 하나를 선택하고 확정합니다.
+
+### 4. 근무표 관리 (Calendar & Shift)
+
+* **월간 캘린더 (`/calendar`)**
+    * *경로: `src/app/(main)/calendar/page.tsx`*
+    * 월간 근무 현황(`MonthlyCalendarView`)을 한눈에 볼 수 있습니다.
+    * 특정 날짜 선택 시, 하단에 해당일의 근무자 목록(`DailyShiftList`)이 나타납니다.
+* **근무 추가 (`/calendar/shift/add`)**
+    * *경로: `src/app/calendar/shift/add/page.tsx`*
+    * 캘린더에서 특정 날짜에 수동으로 근무(시프트)를 추가하는 페이지입니다.
+* **근무 수정 (`/calendar/shift/[shiftId]`)**
+    * *경로: `src/app/calendar/shift/[shiftId]/page.tsx`*
+    * 기존 근무(시프트)의 상세 정보를 수정하거나 삭제하는 동적 라우트 페이지입니다.
+
+### 5. 알바생 관리
+
+* **알바생 목록 (`/employees`)**
+    * *경로: `src/app/(main)/employees/page.tsx`*
+    * 등록된 알바생 목록(`EmployeeList`)을 보여주며, '알바생 추가' 버튼을 통해 신규 등록 폼(`EmployeeForm`)으로 연결됩니다.
+* **알바생 추가/수정**
+    * *관련 컴포넌트: `src/features/employees/components/EmployeeForm.tsx`*
+    * 알바생 개인정보, 근무 가능 요일/시간 등을 입력받는 폼 컴포넌트입니다.
+
+### 6. 설정
+
+* **설정 페이지 (`/settings`)**
+    * *경로: `src/app/(main)/settings/page.tsx`*
+    * 매장 정보 수정(`StoreInfoView`) 및 로그아웃(`LogoutButton`) 기능을 제공합니다.
 
 ---
 
@@ -154,10 +174,18 @@
 
 **✅ 작업 흐름 예시:**
 
-1.  항상 `develop` 브랜치를 최신 상태로 받습니다. (`git pull origin develop`)
-2.  새 기능 개발을 위해 브랜치를 생성합니다. (`git checkout -b feature/login-ui`)
+1.  항상 `develop` 브랜치를 최신 상태로 받습니다. 
+
+    ```bash
+    git pull origin develop
+    ```
+2.  새 기능 개발을 위해 브랜치를 생성합니다.
+
+    ```bash
+    git checkout -b feature/login-ui
+    ```
 3.  기능을 개발하고 커밋합니다.
-4.  작업이 완료되면 `develop` 브랜치로 **Pull Request(PR)**를 생성합니다.
+4.  작업이 완료되면 `develop` 브랜치로 **Pull Request(PR)** 를 생성합니다.
 5.  **[필수]** 동료 개발자가 코드를 리뷰하고 **'Approve'** 합니다.
 6.  리뷰가 완료되면 `develop` 브랜치에 머지합니다.
 
@@ -207,7 +235,7 @@ API 응답, `Employee`, `Store` 같은 핵심 데이터 타입을 `src/types/ind
 
 **5. 소통 및 작업 관리**
 * **도구:** GitHub Issues, Notion, Trello, Asana 등 간단한 칸반보드 툴을 사용해 '할 일', '진행 중', '완료'를 공유하세요.
-* **소통:** 매일 10분 정도의 짧은 **싱크업(Sync-up) 미팅(데일리 스크럼)**을 통해 "어제 한 일, 오늘 할 일, 막힌 부분"을 공유하면 서로의 진행 상황을 파악하는 데 큰 도움이 됩니다.
+* **소통:** 매일 10분 정도의 짧은 **싱크업(Sync-up) 미팅(데일리 스크럼)** 을 통해 "어제 한 일, 오늘 할 일, 막힌 부분"을 공유하면 서로의 진행 상황을 파악하는 데 큰 도움이 됩니다.
 
 ---
 
