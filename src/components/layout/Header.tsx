@@ -10,7 +10,7 @@ export default function Header() {
   const getTitleByPath = (path: string): string => {
     switch (path) {
       case '/home':
-        return '매장 이름'; // 매장 이름
+        return '가면감 매장'; // 매장 이름
       case '/calendar':
         return '캘린더';
       case '/employees':
@@ -18,7 +18,7 @@ export default function Header() {
       case '/settings':
         return '설정';
       default:
-        return 'Goat Schedule';
+        return '가면감 스케줄';
     }
   };
 
@@ -29,7 +29,7 @@ export default function Header() {
       className="flex-shrink-0 sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm"
       style={{ paddingTop: 'env(safe-area-inset-top)' }}
     >
-      <div className="mx-auto w-full px-4 py-2" style={{ maxWidth: 'var(--app-max-width)' }}>
+      <div className="mx-auto w-full max-w-md px-4 py-2">
         {/* 페이지 제목 영역 (좌측 공백 + 텍스트) */}
         <div className={styles.titleRow}>
           <span className={styles.spacer} aria-hidden="true" />

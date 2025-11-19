@@ -1,3 +1,3 @@
 // Placeholder for schedule API
-export {}; 
+export {};
 

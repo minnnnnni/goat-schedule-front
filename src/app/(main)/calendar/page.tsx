@@ -7,7 +7,7 @@ import { useShiftsForDate } from '@/features/schedule/hooks/useShifts';
 
 export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const { shifts, loading } = useShiftsForDate(selectedDate);
+  const { shifts } = useShiftsForDate(selectedDate);
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
@@ -37,7 +37,6 @@ export default function CalendarPage() {
         selectedDate={selectedDate}
         shifts={shifts}
         onAddShift={handleAddShift}
-        loading={loading}
       />
     </div>
   );
