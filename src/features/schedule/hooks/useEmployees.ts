@@ -10,7 +10,7 @@ export function useEmployees(storeId: number = DEFAULT_STORE_ID) {
 
   useEffect(() => {
     let mounted = true;
-    async function fetchEmployees() {
+    async function getEmployeesApi() {
       setLoading(true);
       setError(null);
       try {
@@ -29,7 +29,7 @@ export function useEmployees(storeId: number = DEFAULT_STORE_ID) {
       }
     }
 
-    fetchEmployees();
+    getEmployeesApi();
 
     return () => {
       mounted = false;

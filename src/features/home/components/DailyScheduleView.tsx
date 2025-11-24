@@ -3,7 +3,8 @@
 import { useMemo, useState, useEffect } from "react";
 import styles from "./DailyScheduleView.module.css";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { fetchEmployees } from "@/services/employeeApi";
+import { getEmployees } from "@/services/employeeApi";
+const DEFAULT_STORE_ID = 1;
 import { fetchScheduleByDate } from "@/services/scheduleApi";
 
 // 초기 날짜 계산 함수 (컴포넌트 외부)
@@ -22,16 +23,19 @@ export default function DailyScheduleView() {
 
   // 타입 정의
   type Employee = {
-    id: string;
+    id: number;
     name: string;
     role?: string;
+    phone?: string;
+    email?: string;
+    maxWeeklyHours?: number;
   };
   type Shift = {
     id: string;
     date: string;
     start: string;
     end: string;
-    employeeIds: string[];
+      employeeIds: number[];
   };
 
   // formatDate 함수 선언 위치를 useEffect보다 위로 이동 (중복 제거)
@@ -46,7 +50,7 @@ export default function DailyScheduleView() {
     async function fetchData() {
       setLoading(true);
       const [empData, schedData] = await Promise.all([
-        fetchEmployees(),
+        getEmployees(DEFAULT_STORE_ID),
         fetchScheduleByDate(formatDate(currentDate)),
       ]);
       setEmployees(empData);
@@ -85,10 +89,10 @@ export default function DailyScheduleView() {
   };
 
   const resolvedShifts = useMemo(() => {
-    const idToName = new Map<string, string>(employees.map((e) => [e.id, e.name]));
+    const idToName = new Map<number, string>(employees.map((e) => [e.id, e.name]));
     return schedule.map((s) => {
       const pos: Position = s.start === '09:00' ? '오픈' : s.start === '13:00' ? '미들' : s.start === '18:00' ? '오후' : '미들';
-      const names = (s.employeeIds || []).map((id: string) => idToName.get(id) || '직원');
+      const names = (s.employeeIds || []).map((id: number) => idToName.get(id) || '직원');
       return {
         id: s.id,
         position: pos,
