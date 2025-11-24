@@ -1,3 +1,7 @@
-// Placeholder for employee API (연동 준비 전, 원래 상태로 유지)
-export {};
+import axios from 'axios';
+
+export async function fetchEmployees() {
+	const response = await axios.get('/api/employees');
+	return response.data;
+}
 

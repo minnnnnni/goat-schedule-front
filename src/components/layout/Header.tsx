@@ -10,7 +10,7 @@ export default function Header() {
   const getTitleByPath = (path: string): string => {
     switch (path) {
       case '/home':
-        return '가면감 매장'; // 매장 이름
+        return '매장 이름'; // 매장 이름
       case '/calendar':
         return '캘린더';
       case '/employees':
