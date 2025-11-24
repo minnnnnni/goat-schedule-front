@@ -59,7 +59,7 @@ export function useShiftsForDate(date: Date | null) {
     const idToName = new Map<number, string>(employees.map(e => [e.id, e.name]));
     return (schedule || []).map((s) => {
       const type: ShiftType = s.start === '09:00' ? '오전' : s.start === '13:00' ? '미들' : '오후';
-      const name = (s.employeeIds || []).map((id: string) => idToName.get(id) || '직원').join(', ');
+      const name = (s.employeeIds || []).map((id: number) => idToName.get(id) || '직원').join(', ');
       return {
         id: s.id,
         type,
