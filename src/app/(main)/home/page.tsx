@@ -3,14 +3,25 @@
 import DailyScheduleView from '@/features/home/components/DailyScheduleView';
 import { PlusIcon } from "@heroicons/react/20/solid";
 import styles from './HomePage.module.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import GenerateSchedulePopup from '@/features/home/components/GenerateSchedulePopup';
+import Modal from '@/components/ui/Modal';
+import ScheduleResultPicker from '@/features/schedule/components/ScheduleResultPicker';
 
 
 export default function HomePage() {
-  const [showPopup, setShowPopup] = useState(false);
+  // 'none' | 'generate' | 'results'
+  const [popupState, setPopupState] = useState<'none' | 'generate' | 'results'>('none');
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("popup") === "1") {
+        setTimeout(() => setPopupState('generate'), 0);
+      }
+    }
+  }, []);
   const handleGenerate = () => {
-    setShowPopup(true);
+    setPopupState('generate');
   };
   return (
     <div className={styles.homeWrap}>
@@ -21,8 +32,21 @@ export default function HomePage() {
         <span className={styles.buttonText}>자동 근무표 생성</span>
       </button>
       <DailyScheduleView />
-      {showPopup && (
-          <GenerateSchedulePopup onClose={() => setShowPopup(false)} />
+      {popupState === 'generate' && (
+        <Modal>
+          <GenerateSchedulePopup 
+            onClose={() => setPopupState('none')}
+            onGenerate={() => setPopupState('results')}
+          />
+        </Modal>
+      )}
+      {popupState === 'results' && (
+        <Modal>
+          <ScheduleResultPicker 
+            onSelect={() => setPopupState('none')}
+            onBack={() => setPopupState('generate')}
+          />
+        </Modal>
       )}
     </div>
   );

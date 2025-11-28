@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import { useState } from 'react';
 import Calendar from '@/components/ui/Calendar';
@@ -18,7 +18,7 @@ export default function MonthlyCalendarView({ onDateSelect, selectedDate: contro
     onDateSelect?.(date);
   };
 
-  return (
+  return 
     <Calendar selectedDate={selectedDate ?? null} onDateSelect={handleSelect} />
   );
 }

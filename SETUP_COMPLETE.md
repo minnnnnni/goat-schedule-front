@@ -23,6 +23,7 @@ src/types/
 ```
 
 **특징:**
+
 - DB 스키마를 그대로 반영한 타입 정의
 - camelCase로 통일 (JavaScript 관례)
 - 모든 요청/응답 타입 포함
@@ -41,6 +42,7 @@ src/types/
 4개의 API 서비스로 모든 엔드포인트를 관리:
 
 #### `authApi.ts`
+
 ```typescript
 ✅ login()       - /api/auth/login
 ✅ register()    - /api/auth/register
@@ -48,6 +50,7 @@ src/types/
 ```
 
 #### `storeApi.ts`
+
 ```typescript
 ✅ getStore()    - /api/stores/{storeId}
 ✅ createStore() - /api/stores
@@ -55,6 +58,7 @@ src/types/
 ```
 
 #### `employeeApi.ts`
+
 ```typescript
 ✅ getAllEmployees()   - /api/stores/{storeId}/employees
 ✅ getEmployee()       - /api/stores/{storeId}/employees/{employeeId}
@@ -64,6 +68,7 @@ src/types/
 ```
 
 #### `scheduleApi.ts`
+
 ```typescript
 ✅ getShiftDefinitions()      - /api/stores/{storeId}/shift-definitions
 ✅ createShiftDefinition()    - /api/stores/{storeId}/shift-definitions
@@ -79,6 +84,7 @@ src/types/
 ### 4️⃣ 상태 관리 스토어 (`src/store/`)
 
 #### `useAuthStore.ts` (인증 상태)
+
 ```typescript
 상태:
   ├── user: User | null
@@ -99,6 +105,7 @@ src/types/
 ```
 
 #### `useStore.ts` (비즈니스 데이터 캐시)
+
 ```typescript
 상태:
   ├── currentStore: Store
@@ -115,6 +122,7 @@ src/types/
 ```
 
 #### `useUIStore.ts` (UI 상태)
+
 ```typescript
 상태:
   ├── 모달: isModalOpen, modalTitle, modalContent
@@ -136,6 +144,7 @@ src/types/
 ### 5️⃣ 환경 변수 설정
 
 `.env.local` 파일 생성:
+
 ```
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ```
@@ -143,6 +152,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ### 6️⃣ TypeScript 경로 별칭
 
 `tsconfig.json`에 추가:
+
 ```json
 "paths": {
   "@/*": ["src/*"]
@@ -150,15 +160,16 @@ NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ```
 
 이제 다음처럼 import할 수 있습니다:
+
 ```typescript
 // ✅ Good
-import { Employee } from '@/types';
-import { employeeApi } from '@/services';
-import { useAuthStore } from '@/store/useAuthStore';
+import { Employee } from "@/types";
+import { employeeApi } from "@/services";
+import { useAuthStore } from "@/store/useAuthStore";
 
 // ❌ Bad (이제 필요 없음)
-import { Employee } from '../../../types';
-import { employeeApi } from '../../../services/employeeApi';
+import { Employee } from "../../../types";
+import { employeeApi } from "../../../services/employeeApi";
 ```
 
 ---
@@ -169,7 +180,7 @@ import { employeeApi } from '../../../services/employeeApi';
 
 ```typescript
 // src/features/employees/hooks/useEmployees.ts
-import { employeeApi } from '@/services';
+import { employeeApi } from "@/services";
 
 export function useEmployees(storeId: number) {
   const [employees, setEmployees] = useState([]);
@@ -199,9 +210,9 @@ export function useEmployees(storeId: number) {
 
 ```typescript
 // src/app/(main)/page.tsx
-import { useAuthStore } from '@/store/useAuthStore';
-import { useStore } from '@/store/useStore';
-import { useUIStore } from '@/store/useUIStore';
+import { useAuthStore } from "@/store/useAuthStore";
+import { useStore } from "@/store/useStore";
+import { useUIStore } from "@/store/useUIStore";
 
 export default function HomePage() {
   // 인증 정보 가져오기
@@ -216,9 +227,9 @@ export default function HomePage() {
   const handleDelete = async () => {
     try {
       // API 호출
-      addToast('삭제되었습니다', 'success');
+      addToast("삭제되었습니다", "success");
     } catch (error) {
-      addToast('삭제 실패했습니다', 'error');
+      addToast("삭제 실패했습니다", "error");
     }
   };
 
@@ -233,12 +244,14 @@ export default function HomePage() {
 이제 각자의 기능을 개발할 준비가 완료되었습니다:
 
 ### 개발자 A (인증, 온보딩, 직원 관리)
+
 - `src/app/(auth)/` 페이지들
 - `src/app/onboarding/` 페이지들
 - `src/app/(main)/employees/` 페이지들
 - 해당 컴포넌트, 훅 구현
 
 ### 개발자 B (홈, 캘린더, 설정)
+
 - `src/app/(main)/page.tsx` (홈)
 - `src/app/(main)/calendar/` 페이지들
 - `src/app/(main)/settings/` 페이지들
@@ -251,14 +264,17 @@ export default function HomePage() {
 ## 📝 주의사항
 
 1. **토큰 저장**
+
    - `localStorage.setItem('access_token', token)` 사용
    - API 클라이언트가 자동으로 Bearer 토큰 추가
 
 2. **상태 업데이트**
+
    - API 호출 후 항상 상태를 업데이트하세요
    - `useStore()`와 `useAuthStore()` 활용
 
 3. **에러 처리**
+
    - 모든 API 호출에 try-catch 사용
    - `useUIStore().addToast()` 로 사용자에게 피드백
 

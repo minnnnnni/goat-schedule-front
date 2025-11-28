@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Modal from "@/components/ui/Modal";
 import { getEmployees } from "@/services/employeeApi";
 import styles from "./GenerateSchedulePopup.module.css";
@@ -9,6 +10,7 @@ type ShiftType = "오전" | "미들" | "오후";
 type Item = { id: number; employeeId: number | null; date: string; shift?: ShiftType | null; };
 
 export default function GenerateSchedulePopup({ onClose, onGenerate }: { onClose?: () => void; onGenerate?: () => void }) {
+    const router = useRouter();
   // 상태 관리
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -36,6 +38,19 @@ export default function GenerateSchedulePopup({ onClose, onGenerate }: { onClose
     setList: React.Dispatch<React.SetStateAction<Item[]>>
   ) => {
     setList(prev => prev.map(item => item.id === id ? { ...item, [field]: value } : item));
+  };
+
+  // 근무표 생성 버튼 클릭 시 정보 전달 및 이동
+  const handleGenerate = () => {
+    const payload = {
+      startDate,
+      endDate,
+      excludeList,
+      addList,
+    };
+    // 쿼리스트링은 간단 정보만, 복잡한 객체는 router state로 전달
+    router.push(`/generate/results?startDate=${startDate}&endDate=${endDate}`);
+    if (onGenerate) onGenerate();
   };
 
   return (
@@ -86,7 +101,6 @@ export default function GenerateSchedulePopup({ onClose, onGenerate }: { onClose
             {/* 변경사항이 있을 때만 표시 */}
             {hasChange && (
               <div className={styles.fadeEnter}>
-                
                 {/* 근무 제외 섹션 */}
                 <div style={{ marginBottom: "32px" }}>
                   <label className={styles.cardLabel}>이날 근무 제외</label>
@@ -160,7 +174,7 @@ export default function GenerateSchedulePopup({ onClose, onGenerate }: { onClose
             )}
           </div>
           {/* 근무표 생성 버튼은 항상 카드 아래에 고정 */}
-          <button className={styles.generateBtn} onClick={onGenerate}>
+          <button className={styles.generateBtn} onClick={handleGenerate}>
             자동 근무표 생성
           </button>
         </div>
