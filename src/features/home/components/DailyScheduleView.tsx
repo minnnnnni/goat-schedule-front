@@ -51,7 +51,7 @@ export default function DailyScheduleView() {
       setLoading(true);
       const [empData, schedData] = await Promise.all([
         getEmployees(DEFAULT_STORE_ID),
-        fetchScheduleByDate(formatDate(currentDate)),
+        fetchScheduleByDate(DEFAULT_STORE_ID, formatDate(currentDate)),
       ]);
       setEmployees(empData);
       setSchedule(schedData);

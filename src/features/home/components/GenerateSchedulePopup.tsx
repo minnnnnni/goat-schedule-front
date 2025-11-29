@@ -42,12 +42,6 @@ export default function GenerateSchedulePopup({ onClose, onGenerate }: { onClose
 
   // 근무표 생성 버튼 클릭 시 정보 전달 및 이동
   const handleGenerate = () => {
-    const payload = {
-      startDate,
-      endDate,
-      excludeList,
-      addList,
-    };
     // 쿼리스트링은 간단 정보만, 복잡한 객체는 router state로 전달
     router.push(`/generate/results?startDate=${startDate}&endDate=${endDate}`);
     if (onGenerate) onGenerate();

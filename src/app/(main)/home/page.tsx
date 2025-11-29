@@ -1,15 +1,28 @@
-"use client";
 
+
+"use client";
+import { useEffect, useState } from 'react';
 import DailyScheduleView from '@/features/home/components/DailyScheduleView';
 import { PlusIcon } from "@heroicons/react/20/solid";
 import styles from './HomePage.module.css';
-import { useState, useEffect } from 'react';
 import GenerateSchedulePopup from '@/features/home/components/GenerateSchedulePopup';
 import Modal from '@/components/ui/Modal';
 import ScheduleResultPicker from '@/features/schedule/components/ScheduleResultPicker';
 
-
 export default function HomePage() {
+  // 로그인 체크 및 임시 토큰 삽입 (개발용)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (!localStorage.getItem('access_token')) {
+        localStorage.setItem('access_token', 'test-access-token');
+      }
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        window.location.href = '/login';
+      }
+    }
+  }, []);
+
   // 'none' | 'generate' | 'results'
   const [popupState, setPopupState] = useState<'none' | 'generate' | 'results'>('none');
   useEffect(() => {

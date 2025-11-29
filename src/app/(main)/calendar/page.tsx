@@ -1,4 +1,19 @@
+
 'use client';
+
+// 로그인 체크 및 임시 토큰 삽입 (개발용)
+if (typeof window !== 'undefined') {
+  // 개발용: 임시 토큰 강제 삽입 (실제 토큰 값으로 교체 필요)
+  if (!localStorage.getItem('access_token')) {
+    localStorage.setItem('access_token', 'test-access-token'); // 실제 토큰 값으로 교체
+  }
+  // 토큰 없으면 로그인 페이지로 이동
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    window.location.href = '/login';
+    // SSR 환경에서는 return null 필요
+  }
+}
 
 import { useState } from 'react';
 import Calendar from '@/components/ui/Calendar';
@@ -31,12 +46,7 @@ export default function CalendarPage() {
   // 임시 알바생 목록
   const employees = ["김민수", "홍길동", "이수진"];
 
-  // 시간대별 정보
-  const timeBlocks = [
-    { type: "오전", color: "#e3edff", label: "오전", time: "09:00 - 13:00" },
-    { type: "미들", color: "#d6f5d6", label: "미들", time: "13:00 - 18:00" },
-    { type: "오후", color: "#ede3ff", label: "오후", time: "18:00 - 22:00" },
-  ];
+  
 
   return (
     <div className="max-w-[600px] mx-auto px-4 py-5">

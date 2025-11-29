@@ -3,13 +3,15 @@ import type { ApiResponse } from '@/types/api';
 
 // -------------------- Row Types (snake_case from backend) --------------------
 export interface StoreRow {
-  store_id: number;
-  owner_user_id: number;
+  id: number;
+  ownerUserId: number;
   name: string;
-  open_time: string;      // TIME HH:MM[:SS]
-  close_time: string;     // TIME HH:MM[:SS]
-  open_days?: string;     // CSV e.g. "MON,TUE,WED"
-  created_at?: string;    // TIMESTAMP
+  address?: string;
+  contact?: string;
+  openTime: string;      // TIME HH:MM[:SS]
+  closeTime: string;     // TIME HH:MM[:SS]
+  openDays?: string;     // CSV e.g. "MON,TUE,WED"
+  createdAt?: string;    // TIMESTAMP
 }
 
 export interface EmployeeRow {
@@ -36,6 +38,8 @@ export interface StoreView {
   id: number;
   ownerUserId: number;
   name: string;
+  address?: string;
+  contact?: string;
   openTime: string;   // HH:MM
   closeTime: string;  // HH:MM
   businessDays: boolean[]; // [SUN..SAT]
@@ -83,12 +87,14 @@ function toOpenDaysCsv(days: boolean[]): string {
 
 function mapStoreRow(row: StoreRow): StoreView {
   return {
-    id: row.store_id,
-    ownerUserId: row.owner_user_id,
-    name: row.name,
-    openTime: toHm(row.open_time),
-    closeTime: toHm(row.close_time),
-    businessDays: parseOpenDays(row.open_days),
+    id: row.id,
+    ownerUserId: row.ownerUserId,
+    name: row.name ?? '',
+    address: row.address ?? '',
+    contact: row.contact ?? '',
+    openTime: toHm(row.openTime),
+    closeTime: toHm(row.closeTime),
+    businessDays: parseOpenDays(row.openDays),
   };
 }
 
@@ -111,9 +117,27 @@ function mapShiftDefinitionRow(r: ShiftDefinitionRow): ShiftDefinitionView {
 // NOTE: baseURL already includes '/api' -> endpoints use '/stores/...'
 
 // 매장 정보 조회
+  const res = await apiClient.get(`/stores/${1}`);
+
 export async function getStore(storeId: number): Promise<StoreView> {
-  const res = await apiClient.get<ApiResponse<StoreRow>>(`/stores/${storeId}`);
-  return mapStoreRow(res.data.data);
+    // (이 부분 삭제: data 선언 전에 접근 불가)
+  console.debug('[storeApi.getStore] 응답:', res.data);
+    let data = res.data;
+    if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data);
+      } catch (e) {
+        console.error('매장 정보 JSON 파싱 오류:', data);
+        throw new Error('매장 정보 파싱 오류');
+      }
+    }
+  if (!data) {
+    console.error('[storeApi.getStore] 매장 정보 응답이 없습니다:', data);
+    throw new Error('매장 정보가 없습니다.');
+  }
+  console.debug('[storeApi.getStore] 파싱된 데이터:', data);
+  const storeData = data.store ?? data;
+  return mapStoreRow(storeData);
 }
 
 // 매장 정보 수정 (PUT 전체 갱신 가정)

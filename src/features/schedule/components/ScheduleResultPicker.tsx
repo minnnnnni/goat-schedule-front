@@ -1,7 +1,6 @@
 
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import styles from "./ScheduleResultPicker.module.css";
 
 // 예시 결과 데이터 (실제 API 연동 시 교체)

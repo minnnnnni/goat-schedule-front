@@ -18,7 +18,7 @@ export default function MonthlyCalendarView({ onDateSelect, selectedDate: contro
     onDateSelect?.(date);
   };
 
-  return 
+  return (
     <Calendar selectedDate={selectedDate ?? null} onDateSelect={handleSelect} />
   );
 }
