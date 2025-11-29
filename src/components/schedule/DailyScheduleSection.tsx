@@ -1,6 +1,7 @@
 "use client";
 
 import styles from "./DailyScheduleSection.module.css";
+import DailyShiftList from '@/features/schedule/components/DailyShiftList';
 
 interface Shift {
   id: string;
@@ -42,35 +43,8 @@ export default function DailyScheduleSection({ selectedDate, shifts, onAddShift 
       {/* 안내 메시지 */}
       <p className={styles.hint}>이름을 눌러 수정하세요!</p>
 
-      {/* 근무 시간표 리스트 */}
-      {shifts.length === 0 ? (
-        <div className={styles.empty}>등록된 근무가 없습니다</div>
-      ) : (
-        <div className={styles.list}>
-          {shifts.map((shift) => {
-            const typeClass =
-              shift.type === '오전'
-                ? styles.badgeMorning
-                : shift.type === '미들'
-                ? styles.badgeMiddle
-                : styles.badgeAfternoon;
-
-            return (
-              <div key={shift.id} className={styles.card}>
-                <div className={styles.meta}>
-                  <span className={`${styles.badge} ${typeClass}`}>{shift.type}</span>
-                  <span className="text-sm text-gray-600 font-medium">
-                    {shift.startTime} - {shift.endTime}
-                  </span>
-                </div>
-                <span className="text-sm font-semibold text-gray-900">
-                  {shift.employeeName}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      )}
+      {/* 근무 시간표 리스트 - 프리젠터 분리 */}
+      <DailyShiftList shifts={shifts} onEdit={(shift) => alert(`${shift.employeeName} 근무 수정 (임시)`)} />
     </div>
   );
 }
