@@ -5,7 +5,7 @@ import DailyShiftList from '@/features/schedule/components/DailyShiftList';
 
 interface Shift {
   id: string;
-  type: '오전' | '미들' | '오후';
+  type: string;
   startTime: string;
   endTime: string;
   employeeName: string;
@@ -35,7 +35,7 @@ export default function DailyScheduleSection({ selectedDate, shifts, onAddShift 
       {/* 제목과 추가 버튼 */}
       <div className={styles.header}>
         <h2 className={styles.title}>{formatDate(selectedDate)}</h2>
-        <button onClick={onAddShift} className={styles.addButton}>
+        <button onClick={onAddShift} className={styles.addButton} style={{ background: '#2563eb', color: '#fff', borderRadius: 12, padding: '8px 16px', fontWeight: 700, border: 'none', boxShadow: '0 2px 8px rgba(37,99,235,0.10)' }}>
           알바생 추가
         </button>
       </div>

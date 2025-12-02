@@ -2,7 +2,7 @@
 // 타입 정의
 interface Shift {
   id: string;
-  type: '오전' | '미들' | '오후';
+  type: string;
   startTime: string;
   endTime: string;
   employeeName: string;

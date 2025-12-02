@@ -25,12 +25,12 @@ export interface EmployeeRow {
 export interface ShiftDefinitionRow {
   shift_definition_id: number;
   store_id: number;
-  title?: string;       // e.g. "타임 1"
-  label?: string;       // e.g. "오전" (sub)
-  start_time: string;   // HH:MM[:SS]
-  end_time: string;     // HH:MM[:SS]
-  color?: string;       // 'blue' | 'green' | 'purple'
-  created_at?: string;
+  name: string;           // API 응답에 맞게 추가
+  title?: string;         // 하위 호환
+  label?: string;         // 하위 호환
+  start_time: string;     // HH:MM[:SS]
+  end_time: string;       // HH:MM[:SS]
+  color: string;         // 'blue' | 'green' | 'purple'
 }
 
 // -------------------- View / Front Types --------------------
@@ -43,6 +43,7 @@ export interface StoreView {
   openTime: string;   // HH:MM
   closeTime: string;  // HH:MM
   businessDays: boolean[]; // [SUN..SAT]
+  closedDays?: string; // CSV e.g. "월,화"
 }
 
 export interface EmployeeView {
@@ -54,14 +55,12 @@ export interface EmployeeView {
 
 export interface ShiftDefinitionView {
   id: number;
-  title?: string;
-  sub?: string; // label
-  start: string; // HH:MM
-  end: string;   // HH:MM
-  color?: string;
+  name: string;
+  startTime: string;
+  endTime: string;
+  color: string;
 }
 
-// -------------------- Helpers --------------------
 const DAY_ORDER = ['SUN','MON','TUE','WED','THU','FRI','SAT'] as const;
 
 function toHm(t: string): string {
@@ -103,13 +102,19 @@ function mapEmployeeRow(r: EmployeeRow): EmployeeView {
 }
 
 function mapShiftDefinitionRow(r: ShiftDefinitionRow): ShiftDefinitionView {
+  // 컬러가 없으면 기본값을 순환할당 (blue, green, purple)
+  const defaultColors = ['blue', 'green', 'purple'];
+  let color = r.color;
+  if (!color) {
+    // id 기반으로 순환
+    color = defaultColors[r.shift_definition_id % defaultColors.length];
+  }
   return {
     id: r.shift_definition_id,
-    title: r.title,
-    sub: r.label,
-    start: toHm(r.start_time),
-    end: toHm(r.end_time),
-    color: r.color,
+    name: r.name ?? r.title ?? '',
+    startTime: toHm(r.start_time ?? ''),
+    endTime: toHm(r.end_time ?? ''),
+    color,
   };
 }
 
@@ -161,14 +166,14 @@ export async function updateStore(storeId: number, viewPatch: Partial<StoreView>
 
 // 매장 전체 직원 조회
 export async function getStoreEmployees(storeId: number): Promise<EmployeeView[]> {
-  const res = await apiClient.get<ApiResponse<EmployeeRow[]>>(`/stores/${storeId}/employees`);
-  return (res.data.data || []).map(mapEmployeeRow);
+  const res = await apiClient.get(`/stores/${storeId}/employees`);
+  return (res.data || []).map(mapEmployeeRow);
 }
 
 // 근무 시간대(Shift Definitions) 목록 조회
 export async function getShiftDefinitions(storeId: number): Promise<ShiftDefinitionView[]> {
-  const res = await apiClient.get<ApiResponse<ShiftDefinitionRow[]>>(`/stores/${storeId}/shift-definitions`);
-  return (res.data.data || []).map(mapShiftDefinitionRow);
+  const res = await apiClient.get(`/stores/${storeId}/shift-definitions`);
+  return (res.data || []).map(mapShiftDefinitionRow);
 }
 
 // 새 근무 시간대 추가

@@ -1,22 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import styles from "./EmployeeAssignModal.module.css";
+import type { ShiftDefinitionRow } from "@/services/storeApi";
+import type { EmployeeRow } from "@/services/storeApi";
+
 
 interface EmployeeAssignModalProps {
   open: boolean;
   onClose: () => void;
   selectedDate: Date | null;
-  selectedTime: '오전'|'미들'|'오후'|null;
-  setSelectedTime: (t: '오전'|'미들'|'오후') => void;
+  selectedTime: string | null;
+  setSelectedTime: (t: string) => void;
   selectedEmployee: string;
   setSelectedEmployee: (e: string) => void;
-  employees: string[];
 }
 
-const timeBlocks = [
-  { type: "오전", color: "#e3edff", label: "오전", time: "09:00 - 13:00" },
-  { type: "미들", color: "#d6f5d6", label: "미들", time: "13:00 - 18:00" },
-  { type: "오후", color: "#ede3ff", label: "오후", time: "18:00 - 22:00" },
-];
+
 
 export default function EmployeeAssignModal({
   open,
@@ -26,15 +25,37 @@ export default function EmployeeAssignModal({
   setSelectedTime,
   selectedEmployee,
   setSelectedEmployee,
-  employees,
 }: EmployeeAssignModalProps) {
+  const [timeBlocks, setTimeBlocks] = useState<ShiftDefinitionRow[]>([]);
+  const [employees, setEmployees] = useState<string[]>([]);
+
+  useEffect(() => {
+    const storeId = 1;
+    axios.get(`/api/stores/${storeId}/shift-definitions`)
+      .then(res => {
+        setTimeBlocks(res.data);
+      })
+      .catch(err => {
+        console.error("Failed to fetch shift definitions", err);
+        setTimeBlocks([]);
+      });
+    axios.get<{ data: EmployeeRow[] }>(`/api/stores/${storeId}/employees`)
+      .then(res => {
+        const arr = Array.isArray(res.data.data) ? res.data.data : [];
+        setEmployees(arr.map(e => e.name));
+      })
+      .catch(err => {
+        console.error("Failed to fetch employees", err);
+        setEmployees([]);
+      });
+  }, []);
   if (!open) return null;
   return (
     <div className={styles.modalOverlay}>
-      <div className={styles.modal}>
+      <div className={styles.modal} style={{ background: '#e3edff', borderRadius: 20, boxShadow: '0 2px 8px rgba(37,99,235,0.08)' }}>
         {/* 헤더 */}
         <div className={styles.header}>
-          <button onClick={onClose} className={styles.backBtn}>&lt;</button>
+          <button onClick={onClose} className={styles.backBtn} style={{ color: '#2563eb', fontWeight: 700 }}>&lt;</button>
           <div>
             <div className={styles.headerTitle}>알바생 배정</div>
             <div className={styles.headerDate}>{selectedDate ? selectedDate.toLocaleDateString("ko-KR", { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' }) : ""}</div>
@@ -42,27 +63,22 @@ export default function EmployeeAssignModal({
         </div>
         {/* 시간 선택 */}
         <div className={styles.body}>
-          <div className={styles.label}>타임 선택</div>
-          <div className={styles.timeBlockRow}>
+          <div className={styles.label} style={{ color: '#2563eb', fontWeight: 700 }}>타임 선택</div>
+          <div className={styles.timeBlockRow} style={{ gap: 8 }}>
             {timeBlocks.map(tb => (
               <button
-                key={tb.type}
-                className={[ 
-                  styles.timeBlockBtn,
-                  selectedTime === tb.type ? styles.selected : '',
-                  tb.type === '오전' && selectedTime === tb.type ? styles.morning : '',
-                  tb.type === '미들' && selectedTime === tb.type ? styles.middle : '',
-                  tb.type === '오후' && selectedTime === tb.type ? styles.afternoon : '',
-                ].join(' ')}
-                onClick={() => setSelectedTime(tb.type as '오전'|'미들'|'오후')}
+                key={tb.store_id}
+                className={styles.timeBlockBtn}
+                style={{ background: selectedTime === tb.name ? '#2563eb' : '#fff', color: selectedTime === tb.name ? '#fff' : '#2563eb', borderRadius: 12, border: '1.5px solid #2563eb', padding: '8px 16px', fontWeight: 700, boxShadow: selectedTime === tb.name ? '0 2px 8px rgba(37,99,235,0.10)' : 'none' }}
+                onClick={() => setSelectedTime(tb.name)}
               >
-                <span>{tb.label}</span>
-                <span className={styles.timeBlockTime}>{tb.time}</span>
+                <span>{tb.name}</span>
+                <span className={styles.timeBlockTime} style={{ marginLeft: 8 }}>{tb.start_time}~{tb.end_time}</span>
               </button>
             ))}
           </div>
           {/* 알바생 이름 선택 */}
-          <div className={styles.selectLabel}>알바생 이름</div>
+          <div className={styles.selectLabel} style={{ color: '#2563eb', fontWeight: 700 }}>알바생 이름</div>
           <select
             className={styles.select}
             value={selectedEmployee}
@@ -74,6 +90,7 @@ export default function EmployeeAssignModal({
           {/* 완료 버튼 */}
           <button
             className={styles.confirmBtn}
+            style={{ background: '#2563eb', color: '#fff', borderRadius: 12, padding: '10px 0', fontWeight: 700, border: 'none', boxShadow: '0 2px 8px rgba(37,99,235,0.10)' }}
             onClick={onClose}
             disabled={!selectedTime || !selectedEmployee}
           >

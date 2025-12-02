@@ -18,7 +18,6 @@ if (typeof window !== 'undefined') {
 import { useState } from 'react';
 import Calendar from '@/components/ui/Calendar';
 import DailyScheduleSection from '@/components/schedule/DailyScheduleSection';
-import { useEffect } from 'react';
 import EmployeeAssignModal from '@/features/schedule/components/EmployeeAssignModal';
 import { useShiftsForDate } from '@/features/schedule/hooks/useShifts';
 
@@ -26,7 +25,7 @@ export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const { shifts } = useShiftsForDate(selectedDate);
   const [showModal, setShowModal] = useState(false);
-  const [selectedTime, setSelectedTime] = useState<'오전'|'미들'|'오후'|null>(null);
+  const [selectedTime, setSelectedTime] = useState<'오류'|'확인'|'초기값'|null>(null);
   const [selectedEmployee, setSelectedEmployee] = useState<string>("");
 
   const handleDateSelect = (date: Date) => {
@@ -43,10 +42,13 @@ export default function CalendarPage() {
     setSelectedEmployee("");
   };
 
-  // 임시 알바생 목록
-  const employees = ["김민수", "홍길동", "이수진"];
+  const handleSetTime = (t: string) => 
+    setSelectedTime(t as "오류" | "확인" | "초기값" | null);
 
-  
+
+
+
+
 
   return (
     <div className="max-w-[600px] mx-auto px-4 py-5">
@@ -72,10 +74,9 @@ export default function CalendarPage() {
         onClose={handleModalClose}
         selectedDate={selectedDate}
         selectedTime={selectedTime}
-        setSelectedTime={setSelectedTime}
+        setSelectedTime={handleSetTime}
         selectedEmployee={selectedEmployee}
         setSelectedEmployee={setSelectedEmployee}
-        employees={employees}
       />
     </div>
   );

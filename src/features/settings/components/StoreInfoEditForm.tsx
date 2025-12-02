@@ -10,10 +10,9 @@ import type { StoreView } from "@/services/storeApi";
 
 export type TimeBlock = {
   id: number;
-  title: string;
-  sub: string;
-  start: string;
-  end: string;
+  name: string;
+  startTime: string;
+  endTime: string;
   color: "blue" | "green" | "purple" | string;
 };
 
@@ -38,15 +37,14 @@ export default function StoreInfoEditForm() {
           ...s,
           timeBlocks: (defs || []).map(d => ({
             id: d.id ?? 0,
-            title: d.title ?? `타임 ${d.id ?? ''}`,
-            sub: d.sub ?? "",
-            start: d.start ?? '',
-            end: d.end ?? '',
+            name: d.name ?? `타임 ${d.id ?? ''}`,
+            startTime: d.startTime ?? '',
+            endTime: d.endTime ?? '',
             color: (typeof d.color === 'string' && d.color) ? d.color : 'blue',
           })),
         });
         setError(null);
-      } catch (err) {
+      } catch {
         setError('매장 정보를 불러올 수 없습니다.');
       } finally {
         setLoading(false);
@@ -65,7 +63,7 @@ export default function StoreInfoEditForm() {
       return { ...prev, businessDays: next };
     });
   };
-  const handleTimeBlockChange = (id: number, key: keyof Pick<TimeBlock, "sub" | "start" | "end">, value: string) => {
+  const handleTimeBlockChange = (id: number, key: keyof Pick<TimeBlock, "name" | "startTime" | "endTime">, value: string) => {
     setForm((prev) => prev ? {
       ...prev,
       timeBlocks: prev.timeBlocks.map((tb: TimeBlock) => (tb.id === id ? { ...tb, [key]: value } : tb)),
@@ -82,9 +80,18 @@ export default function StoreInfoEditForm() {
         closeTime: form.closeTime,
         businessDays: form.businessDays,
       });
-      // TODO: Shift definitions 저장은 별도 엔드포인트 필요
+
+      // 타임(shift definition) 저장
+      for (const tb of form.timeBlocks) {
+        await storeApi.createShiftDefinition(STORE_ID, {
+          title: tb.name,
+          start_time: tb.startTime,
+          end_time: tb.endTime,
+          color: tb.color,
+        });
+      }
       alert('저장되었습니다.');
-    } catch (err) {
+    } catch {
       alert('저장 중 오류가 발생했습니다.');
     } finally {
       setSaving(false);
@@ -159,13 +166,13 @@ export default function StoreInfoEditForm() {
               }`}
             >
               <div className={styles.timeEditHeader}>
-                <span className={styles.timeEditTitle}>{tb.title}</span>
+                <span className={styles.timeEditTitle}>{tb.name}</span>
               </div>
               <div className={styles.timeEditRow}>
                 <Input
-                  label="타임 이름"
-                  value={tb.sub}
-                  onChange={(e) => handleTimeBlockChange(tb.id, "sub", e.target.value)}
+                  label="타임 라벨"
+                  value={tb.name}
+                  onChange={(e) => handleTimeBlockChange(tb.id, "name", e.target.value)}
                   wrapperClassName={styles.inputWrapper}
                   variant="soft"
                   size="md"
@@ -173,8 +180,8 @@ export default function StoreInfoEditForm() {
                 <Input
                   label="시작"
                   type="time"
-                  value={tb.start}
-                  onChange={(e) => handleTimeBlockChange(tb.id, "start", e.target.value)}
+                  value={tb.startTime}
+                  onChange={(e) => handleTimeBlockChange(tb.id, "startTime", e.target.value)}
                   wrapperClassName={styles.inputWrapper}
                   variant="soft"
                   size="md"
@@ -182,8 +189,8 @@ export default function StoreInfoEditForm() {
                 <Input
                   label="종료"
                   type="time"
-                  value={tb.end}
-                  onChange={(e) => handleTimeBlockChange(tb.id, "end", e.target.value)}
+                  value={tb.endTime}
+                  onChange={(e) => handleTimeBlockChange(tb.id, "endTime", e.target.value)}
                   wrapperClassName={styles.inputWrapper}
                   variant="soft"
                   size="md"

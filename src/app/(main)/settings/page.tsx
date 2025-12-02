@@ -33,9 +33,9 @@ export default function SettingsPage() {
           </button>
         </div>
 
-        <div className={styles.innerPanel}>
+        
           {!isEditing ? <StoreInfoView /> : <StoreInfoEditForm />}
-        </div>
+        
       </section>
 
       <button onClick={handleLogout} className={styles.logoutBtn}>

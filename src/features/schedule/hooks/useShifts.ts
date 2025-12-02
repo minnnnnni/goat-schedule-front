@@ -36,7 +36,7 @@ export type Schedule = {
 export function useShiftsForDate(date: Date | null) {
   const [schedule, setSchedule] = useState<Schedule[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
-  const [shiftDefs, setShiftDefs] = useState<Array<{id:number; title?:string; sub?:string; start:string; end:string; color?:string;}>>([]);
+  const [shiftDefs, setShiftDefs] = useState<Array<{id:number; name:string; startTime:string; endTime:string; color:string;}>>([]);
 
   const formatDate = (date: Date): string => {
     const year = date.getFullYear();
@@ -55,7 +55,15 @@ export function useShiftsForDate(date: Date | null) {
       ]);
       setEmployees(empData);
       setSchedule(schedData);
-      setShiftDefs(defs);
+      setShiftDefs(
+        (defs || []).map(d => ({
+          id: d.id,
+          name: d.name,
+          startTime: d.startTime,
+          endTime: d.endTime,
+          color: typeof d.color === 'string' ? d.color : 'blue',
+        }))
+      );
     }
     fetchData();
   }, [date]);
@@ -65,9 +73,9 @@ export function useShiftsForDate(date: Date | null) {
     const idToName = new Map<number, string>(employees.map(e => [e.id, e.name]));
     return (schedule || []).map((s) => {
       // shiftDefs에서 start/end가 일치하는 정의를 찾음
-      const def = shiftDefs.find(d => d.start === s.start && d.end === s.end);
-      const type: ShiftType = def?.title || def?.sub || `${s.start}-${s.end}`;
-      const typeLabel = def?.sub || def?.title;
+      const def = shiftDefs.find(d => d.startTime === s.start && d.endTime === s.end);
+      const type: ShiftType = def?.name || `${s.start}-${s.end}`;
+      const typeLabel = def?.name;
       const name = (s.employeeIds || []).map((id: number) => idToName.get(id) || '직원').join(', ');
       return {
         id: s.id,
