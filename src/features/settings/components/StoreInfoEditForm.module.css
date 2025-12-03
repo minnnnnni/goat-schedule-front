@@ -6,11 +6,9 @@
   padding: 16px;
   margin-bottom: 16px;
 }
-.inputWrapper { width: 100%; }
-.inputRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+.inputWrapper {
+  width: 100%;
+  min-width: 0;
 }
 .dayToggleWrap {
   display: flex;
@@ -18,12 +16,12 @@
   gap: 8px;
 }
 .dayButton {
-  padding: 6px 12px;
-  border-radius: 9999px;
+  padding: 10px 16px;
+  border-radius: 16px;
   background: #f3f4f6;
   color: #111827;
   border: 1px solid #e5e7eb;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
   transition: background .15s, color .15s, border-color .15s;
@@ -32,6 +30,8 @@
   background: #2563eb;
   color: #fff;
   border-color: #2563eb;
+  font-size: 15px;
+  font-weight: 700;
 }
 .timeEditList {
   display: flex;
@@ -42,6 +42,7 @@
   border-radius: 12px;
   padding: 12px;
   border: 1px solid transparent;
+  overflow: hidden;
 }
 .timeEditBlue { background: #eef2ff; border-color: #bfdbfe; }
 .timeEditGreen { background: #ecfdf5; border-color: #a7f3d0; }
@@ -57,6 +58,7 @@
   display: grid;
   grid-template-columns: 1fr 120px 120px;
   gap: 10px;
+  width: 100%;
 }
 .saveRow { margin-top: 8px; }
 .saveBtnLarge { height: 44px; }

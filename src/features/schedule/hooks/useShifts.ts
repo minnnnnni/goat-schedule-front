@@ -61,7 +61,6 @@ export function useShiftsForDate(date: Date | null) {
           name: d.name,
           startTime: d.startTime,
           endTime: d.endTime,
-          color: typeof d.color === 'string' ? d.color : 'blue',
         }))
       );
     }

@@ -32,10 +32,8 @@ export default function SettingsPage() {
             {isEditing ? "취소" : "수정"}
           </button>
         </div>
-
         
-          {!isEditing ? <StoreInfoView /> : <StoreInfoEditForm />}
-        
+        {!isEditing ? <StoreInfoView /> : <StoreInfoEditForm />}
       </section>
 
       <button onClick={handleLogout} className={styles.logoutBtn}>

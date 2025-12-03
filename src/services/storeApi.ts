@@ -91,9 +91,9 @@ function mapStoreRow(row: StoreRow): StoreView {
   } else {
     openDaysArr = DAY_LABELS;
   }
-  // businessDays: parseOpenDays expects English CSV (e.g. "MON,TUE"), not 한글 배열
-  // If you want to support businessDays, you need a proper CSV string (e.g. from backend)
-  // For UI, use openDaysArr (한글 요일 배열)
+  // open_days(영어 요일 CSV)가 있으면 businessDays를 실제 값으로 초기화
+  // row.openDaysArr는 한글 배열, row.open_days는 영어 요일 CSV (예: "MON,TUE")
+  const businessDays = row.openDaysArr? parseOpenDays(row.openDaysArr) : new Array(7).fill(true);
   return {
     id: row.id,
     ownerUserId: row.ownerUserId,
@@ -102,7 +102,7 @@ function mapStoreRow(row: StoreRow): StoreView {
     contact: row.contact ?? '',
     openTime: toHm(row.openTime),
     closeTime: toHm(row.closeTime),
-    businessDays: new Array(7).fill(true), // 기본값: 모두 영업 (or adjust as needed)
+    businessDays,
     closedDays: row.closedDays,
     openDaysArr,
   };
@@ -143,6 +143,8 @@ export async function getStore(storeId: number): Promise<StoreView> {
 // 매장 정보 수정 (PUT 전체 갱신 가정)
 export interface StoreUpdatePayload {
   name?: string;
+  address?: string;
+  contact?: string;
   open_time?: string;    // HH:MM
   close_time?: string;   // HH:MM
   open_days?: string;    // CSV
@@ -151,6 +153,8 @@ export interface StoreUpdatePayload {
 export async function updateStore(storeId: number, viewPatch: Partial<StoreView>): Promise<StoreView> {
   const payload: StoreUpdatePayload = {
     name: viewPatch.name,
+    address: viewPatch.address,
+    contact: viewPatch.contact,
     open_time: viewPatch.openTime,
     close_time: viewPatch.closeTime,
     open_days: viewPatch.businessDays ? toOpenDaysCsv(viewPatch.businessDays) : undefined,
