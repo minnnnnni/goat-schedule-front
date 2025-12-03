@@ -1,3 +1,5 @@
+// 요일 순서 상수 (parseOpenDays, toOpenDaysCsv에서 사용)
+const DAY_ORDER = ['SUN','MON','TUE','WED','THU','FRI','SAT'] as const;
 import apiClient from '@/services/apiClient';
 import type { ApiResponse } from '@/types/api';
 
@@ -10,7 +12,8 @@ export interface StoreRow {
   contact?: string;
   openTime: string;      // TIME HH:MM[:SS]
   closeTime: string;     // TIME HH:MM[:SS]
-  openDays?: string;     // CSV e.g. "MON,TUE,WED"
+  closedDays?: string;   // CSV e.g. "월,화"
+  openDaysArr?: string[];
   createdAt?: string;    // TIMESTAMP
 }
 
@@ -22,16 +25,14 @@ export interface EmployeeRow {
   active?: boolean;
 }
 
+// 백엔드 응답 타입 (snake_case)
 export interface ShiftDefinitionRow {
-  shift_definition_id: number;
-  store_id: number;
-  name: string;           // API 응답에 맞게 추가
-  title?: string;         // 하위 호환
-  label?: string;         // 하위 호환
-  start_time: string;     // HH:MM[:SS]
-  end_time: string;       // HH:MM[:SS]
-  color: string;         // 'blue' | 'green' | 'purple'
+  id: number;
+  name: string;
+  startTime: string;
+  endTime: string;
 }
+
 
 // -------------------- View / Front Types --------------------
 export interface StoreView {
@@ -44,6 +45,7 @@ export interface StoreView {
   closeTime: string;  // HH:MM
   businessDays: boolean[]; // [SUN..SAT]
   closedDays?: string; // CSV e.g. "월,화"
+  openDaysArr?: string[];
 }
 
 export interface EmployeeView {
@@ -53,15 +55,6 @@ export interface EmployeeView {
   active?: boolean;
 }
 
-export interface ShiftDefinitionView {
-  id: number;
-  name: string;
-  startTime: string;
-  endTime: string;
-  color: string;
-}
-
-const DAY_ORDER = ['SUN','MON','TUE','WED','THU','FRI','SAT'] as const;
 
 function toHm(t: string): string {
   if (!t) return '';
@@ -85,6 +78,22 @@ function toOpenDaysCsv(days: boolean[]): string {
 }
 
 function mapStoreRow(row: StoreRow): StoreView {
+  // closedDays가 "월,화" 등 한글 CSV로 오면, openDays(영업 요일) 배열로 변환
+  const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
+  let openDaysArr: string[] = [];
+  if (row.closedDays) {
+    const closedArr = row.closedDays
+      .split(',')
+      .map(s => s.trim())
+      .map(s => DAY_LABELS.find(label => s.startsWith(label)) || s)
+      .filter(Boolean);
+    openDaysArr = DAY_LABELS.filter(day => !closedArr.includes(day));
+  } else {
+    openDaysArr = DAY_LABELS;
+  }
+  // businessDays: parseOpenDays expects English CSV (e.g. "MON,TUE"), not 한글 배열
+  // If you want to support businessDays, you need a proper CSV string (e.g. from backend)
+  // For UI, use openDaysArr (한글 요일 배열)
   return {
     id: row.id,
     ownerUserId: row.ownerUserId,
@@ -93,7 +102,9 @@ function mapStoreRow(row: StoreRow): StoreView {
     contact: row.contact ?? '',
     openTime: toHm(row.openTime),
     closeTime: toHm(row.closeTime),
-    businessDays: parseOpenDays(row.openDays),
+    businessDays: new Array(7).fill(true), // 기본값: 모두 영업 (or adjust as needed)
+    closedDays: row.closedDays,
+    openDaysArr,
   };
 }
 
@@ -101,22 +112,6 @@ function mapEmployeeRow(r: EmployeeRow): EmployeeView {
   return { id: r.employee_id, name: r.name, role: r.role, active: r.active };
 }
 
-function mapShiftDefinitionRow(r: ShiftDefinitionRow): ShiftDefinitionView {
-  // 컬러가 없으면 기본값을 순환할당 (blue, green, purple)
-  const defaultColors = ['blue', 'green', 'purple'];
-  let color = r.color;
-  if (!color) {
-    // id 기반으로 순환
-    color = defaultColors[r.shift_definition_id % defaultColors.length];
-  }
-  return {
-    id: r.shift_definition_id,
-    name: r.name ?? r.title ?? '',
-    startTime: toHm(r.start_time ?? ''),
-    endTime: toHm(r.end_time ?? ''),
-    color,
-  };
-}
 
 // -------------------- API Calls --------------------
 // NOTE: baseURL already includes '/api' -> endpoints use '/stores/...'
@@ -171,9 +166,10 @@ export async function getStoreEmployees(storeId: number): Promise<EmployeeView[]
 }
 
 // 근무 시간대(Shift Definitions) 목록 조회
-export async function getShiftDefinitions(storeId: number): Promise<ShiftDefinitionView[]> {
+export async function getShiftDefinitions(storeId: number): Promise<ShiftDefinitionRow[]> {
   const res = await apiClient.get(`/stores/${storeId}/shift-definitions`);
-  return (res.data || []).map(mapShiftDefinitionRow);
+  // API 응답이 camelCase로 온다고 가정
+  return (res.data as ShiftDefinitionRow[]) || [];
 }
 
 // 새 근무 시간대 추가
@@ -182,12 +178,12 @@ export interface CreateShiftDefinitionPayload {
   label?: string; // sub
   start_time: string; // HH:MM
   end_time: string;   // HH:MM
-  color?: string;
 }
 
-export async function createShiftDefinition(storeId: number, payload: CreateShiftDefinitionPayload): Promise<ShiftDefinitionView> {
+export async function createShiftDefinition(storeId: number, payload: CreateShiftDefinitionPayload): Promise<ShiftDefinitionRow> {
   const res = await apiClient.post<ApiResponse<ShiftDefinitionRow>>(`/stores/${storeId}/shift-definitions`, payload);
-  return mapShiftDefinitionRow(res.data.data);
+  // API 응답이 camelCase로 온다고 가정
+  return res.data;
 }
 
 const storeApi = {

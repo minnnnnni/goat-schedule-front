@@ -42,7 +42,7 @@ export default function GenerateSchedulePopup({ onClose, onGenerate }: { onClose
         console.log('[GenerateSchedulePopup] 시프트 목록 전체 응답:', defs);
         if (Array.isArray(defs)) {
           defs.forEach((d, i) => {
-            console.log(`[시프트 ${i}] id:`, d.id, 'name:', d.name, 'startTime:', d.startTime, 'endTime:', d.endTime, 'color:', d.color);
+            console.log(`[시프트 ${i}] id:`, d.id, 'name:', d.name, 'startTime:', d.startTime, 'endTime:', d.endTime);
           });
           setShiftTypes(defs.map(d => d.name ?? ''));
         } else {

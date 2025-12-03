@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import styles from "./StoreInfoView.module.css";
 import storeApi from "@/services/storeApi";
-import type { StoreView, EmployeeView, ShiftDefinitionView } from "@/services/storeApi";
+import type { StoreView, EmployeeView, ShiftDefinitionRow } from "@/services/storeApi";
 
 // ShiftDefinitionView 타입을 그대로 사용
 
@@ -14,7 +14,7 @@ export default function StoreInfoView() {
   const [error, setError] = useState<string | null>(null);
   const [apiErrors, setApiErrors] = useState<{store?: string; shift?: string; employees?: string}>({});
   const [store, setStore] = useState<StoreView | null>(null);
-  const [timeBlocks, setTimeBlocks] = useState<ShiftDefinitionView[]>([]);
+  const [timeBlocks, setTimeBlocks] = useState<ShiftDefinitionRow[]>([]);
   const [employees, setEmployees] = useState<EmployeeView[]>([]);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function StoreInfoView() {
         setTimeBlocks(defs || []);
         if (defs && Array.isArray(defs)) {
           defs.forEach((tb, idx) => {
-            console.log(`[타임 ${idx}] id:`, tb.id, 'name:', tb.name, 'startTime:', tb.startTime, 'endTime:', tb.endTime, 'color:', tb.color);
+            console.log(`[타임 ${idx}] id:`, tb.id, 'name:', tb.name, 'startTime:', tb.startTime, 'endTime:', tb.endTime);
           });
         }
       } catch (err) {
@@ -70,8 +70,23 @@ export default function StoreInfoView() {
     );
   }
 
-  // closedDays가 "월,화" 등 CSV로 오면, 영업 요일은 제외된 요일만 표시
-  const closedDaysArr = store.closedDays ? store.closedDays.split(',').map(s => s.trim()) : [];
+  // closedDays가 "월,화" 또는 "일요일" 등으로 오면, 영업 요일은 제외된 요일만 표시
+  // closedDays가 string 타입일 때 robust하게 배열로 파싱
+  const normalizeDay = (d: string) => {
+    // "일요일" -> "일", "월요일" -> "월" 등 변환
+    if (!d) return d;
+    return DAY_LABELS.find(label => d.startsWith(label)) || d;
+  };
+  let closedDaysArr: string[] = [];
+  if (store.closedDays) {
+    // 쉼표로 구분된 경우, 배열로 파싱
+    closedDaysArr = store.closedDays
+      .split(',')
+      .map(s => normalizeDay(s.trim()))
+      .filter(Boolean);
+  } else {
+    closedDaysArr = [];
+  }
   const openDaysArr = DAY_LABELS.filter(day => !closedDaysArr.includes(day));
   console.log('[StoreInfoView] closedDaysArr:', closedDaysArr);
   console.log('[StoreInfoView] openDaysArr:', openDaysArr);
@@ -119,20 +134,15 @@ export default function StoreInfoView() {
               <p className={styles.timeTitle}>등록된 타임이 없습니다</p>
             </div>
           ) : (
-            timeBlocks.map(tb => {
-              let colorClass = '';
-              let style: React.CSSProperties = {};
-              if (tb.color === 'blue') colorClass = styles.timeBlue;
-              else if (tb.color === 'green') colorClass = styles.timeGreen;
-              else if (tb.color === 'purple') colorClass = styles.timePurple;
-              else if (tb.color) style = { background: tb.color };
-
+            timeBlocks.map((tb, idx) => {
+              // 색상 순환: blue, green, purple
+              const colorOrder = [styles.timeBlue, styles.timeGreen, styles.timePurple];
+              const colorClass = colorOrder[idx % colorOrder.length];
               return (
-                <div key={tb.id} className={`${styles.timeCard} ${colorClass}`} style={style}>
-                  <p className={styles.timeTitle}>{tb.name}</p>
-                  <p className={styles.timeRange}>
-                    {tb.startTime} - {tb.endTime}
-                  </p>
+                <div key={tb.id} className={`${styles.timeCard} ${colorClass}`}>
+                  <p className={styles.timeTitle}>타임 {idx+1}</p>
+                  {tb.name && <p className={styles.timeSub}>{tb.name}</p>}
+                  <p className={styles.timeRange}>{tb.startTime} ~ {tb.endTime}</p>
                 </div>
               );
             })
