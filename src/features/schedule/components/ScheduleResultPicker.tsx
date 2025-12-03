@@ -3,16 +3,20 @@
 import React, { useState } from "react";
 import styles from "./ScheduleResultPicker.module.css";
 
-// 예시 결과 데이터 (실제 API 연동 시 교체)
-const mockResults = [
-  { id: 1, title: "근무표 1", description: "2025.11.08 ~ 2025.11.14" },
-  { id: 2, title: "근무표 2", description: "2025.11.08 ~ 2025.11.14" },
-  { id: 3, title: "근무표 3", description: "2025.11.08 ~ 2025.11.14" },
-];
+// 타입 정의: 실제 API 결과 구조에 맞게 수정 필요
+type ScheduleResult = {
+  id: number;
+  title: string;
+  description: string;
+  days?: Array<{
+    date: string;
+    shifts: Array<{ name: string; employee: string }>;
+  }>;
+};
 
 // 출력 컴포넌트
 function ScheduleResultCard({ result, selected, onClick, idx }: {
-  result: typeof mockResults[0];
+  result: ScheduleResult;
   selected: boolean;
   onClick: () => void;
   idx: number;
@@ -32,19 +36,24 @@ function ScheduleResultCard({ result, selected, onClick, idx }: {
       <div className={styles.cardTitle}>{result.title}</div>
       <div className={styles.cardDesc}>{result.description}</div>
       <div className={styles.cardContent}>
-        <div className="date">2025-11-08 (토)</div>
-        <div className="row"><span>오전</span><span>김민수</span></div>
-        <div className="row"><span>미들</span><span>홍길동</span></div>
-        <div className="row"><span>오후</span><span>홍길동</span></div>
-        <div className="date">2025-11-09 (일)</div>
-        <div className="row"><span>오전</span><span>김민수</span></div>
-        <div className="row"><span>미들</span><span>홍길동</span></div>
-        <div className="row"><span>오후</span><span>홍길동</span></div>
-        <div className="date">2025-11-10 (월)</div>
-        <div className="row"><span>오전</span><span>김민수</span></div>
-        <div className="row"><span>미들</span><span>홍길동</span></div>
-        <div className="row"><span>오후</span><span>홍길동</span></div>
-        <div className="more">... 외 5일</div>
+        {result.days && result.days.length > 0 ? (
+          result.days.slice(0, 3).map((day) => (
+            <React.Fragment key={day.date}>
+              <div className="date">{day.date}</div>
+              {day.shifts.map((shift, j) => (
+                <div className="row" key={j}>
+                  <span>{shift.name}</span>
+                  <span>{shift.employee}</span>
+                </div>
+              ))}
+            </React.Fragment>
+          ))
+        ) : (
+          <div className="row">근무표 데이터 없음</div>
+        )}
+        {result.days && result.days.length > 3 && (
+          <div className="more">... 외 {result.days.length - 3}일</div>
+        )}
       </div>
     </div>
   );
@@ -55,10 +64,12 @@ function ScheduleResultCard({ result, selected, onClick, idx }: {
 type ScheduleResultPickerProps = {
   onSelect?: (id: number) => void;
   onBack?: () => void;
+  resultList?: ScheduleResult[];
 };
 
-export default function ScheduleResultPicker({ onSelect, onBack }: ScheduleResultPickerProps) {
-  const [selectedId, setSelectedId] = useState<number | null>(1);
+export default function ScheduleResultPicker(props: ScheduleResultPickerProps) {
+  const { onSelect, onBack, resultList } = props;
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const handleBack = () => {
     if (onBack) {
@@ -82,12 +93,12 @@ export default function ScheduleResultPicker({ onSelect, onBack }: ScheduleResul
           <button className={styles.backBtn} onClick={handleBack}>&lt;</button>
           <div>
             <div className={styles.title}>생성된 근무표 선택</div>
-            <div className={styles.subtitle}>AI가 생성한 3개의 근무표 중 하나를 선택하세요</div>
+            <div className={styles.subtitle}>AI가 생성한 근무표 중 하나를 선택하세요</div>
           </div>
         </div>
         {/* 결과 카드 리스트 (스크롤) */}
         <div className={styles.cardList}>
-          {mockResults.map((result, idx) => (
+          {(Array.isArray(resultList) ? resultList : []).map((result: ScheduleResult, idx: number) => (
             <ScheduleResultCard
               key={result.id}
               result={result}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import storeApi from "@/services/storeApi";
 import styles from "./EmployeeAssignModal.module.css";
 import type { ShiftDefinitionRow } from "@/services/storeApi";
 import type { EmployeeRow } from "@/services/storeApi";
@@ -31,18 +31,17 @@ export default function EmployeeAssignModal({
 
   useEffect(() => {
     const storeId = 1;
-    axios.get(`/api/stores/${storeId}/shift-definitions`)
-      .then(res => {
-        setTimeBlocks(res.data);
+    storeApi.getShiftDefinitions(storeId)
+      .then(defs => {
+        setTimeBlocks(defs);
       })
       .catch(err => {
         console.error("Failed to fetch shift definitions", err);
         setTimeBlocks([]);
       });
-    axios.get<{ data: EmployeeRow[] }>(`/api/stores/${storeId}/employees`)
-      .then(res => {
-        const arr = Array.isArray(res.data.data) ? res.data.data : [];
-        setEmployees(arr.map(e => e.name));
+    storeApi.getStoreEmployees(storeId)
+      .then(emps => {
+        setEmployees(Array.isArray(emps) ? emps.map(e => e.name) : []);
       })
       .catch(err => {
         console.error("Failed to fetch employees", err);
@@ -67,13 +66,13 @@ export default function EmployeeAssignModal({
           <div className={styles.timeBlockRow} style={{ gap: 8 }}>
             {timeBlocks.map(tb => (
               <button
-                key={tb.store_id}
+                key={tb.id}
                 className={styles.timeBlockBtn}
                 style={{ background: selectedTime === tb.name ? '#2563eb' : '#fff', color: selectedTime === tb.name ? '#fff' : '#2563eb', borderRadius: 12, border: '1.5px solid #2563eb', padding: '8px 16px', fontWeight: 700, boxShadow: selectedTime === tb.name ? '0 2px 8px rgba(37,99,235,0.10)' : 'none' }}
                 onClick={() => setSelectedTime(tb.name)}
               >
                 <span>{tb.name}</span>
-                <span className={styles.timeBlockTime} style={{ marginLeft: 8 }}>{tb.start_time}~{tb.end_time}</span>
+                <span className={styles.timeBlockTime} style={{ marginLeft: 8 }}>{tb.startTime}~{tb.endTime}</span>
               </button>
             ))}
           </div>

@@ -24,6 +24,7 @@ export default function GenerateSchedulePopup({ onClose, onGenerate }: { onClose
   // 결과 모달 상태 및 데이터
   const [showResultModal, setShowResultModal] = useState(false);
   type ScheduleResult = { id: number; title: string; description: string };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [resultList, setResultList] = useState<ScheduleResult[]>([]);
 
   // 초기 데이터 로드
@@ -86,6 +87,7 @@ export default function GenerateSchedulePopup({ onClose, onGenerate }: { onClose
   };
 
   // 근무표 확정 시 (API 연동 후 홈으로 이동)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleConfirmResult = async (selectedId: number) => {
     // 실제로는 확정된 시간표를 백엔드에 저장
     // await api.confirmSchedule(selectedId);

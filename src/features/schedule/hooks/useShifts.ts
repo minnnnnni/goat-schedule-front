@@ -36,7 +36,7 @@ export type Schedule = {
 export function useShiftsForDate(date: Date | null) {
   const [schedule, setSchedule] = useState<Schedule[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
-  const [shiftDefs, setShiftDefs] = useState<Array<{id:number; name:string; startTime:string; endTime:string; color:string;}>>([]);
+  const [shiftDefs, setShiftDefs] = useState<Array<{id:number; name:string; startTime:string; endTime:string;}>>([]);
 
   const formatDate = (date: Date): string => {
     const year = date.getFullYear();

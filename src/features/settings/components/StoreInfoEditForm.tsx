@@ -76,14 +76,21 @@ export default function StoreInfoEditForm() {
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => setForm((prev) => prev ? { ...prev, name: e.target.value } : prev);
   const handleChangeOpen = (e: React.ChangeEvent<HTMLInputElement>) => setForm((prev) => prev ? { ...prev, openTime: e.target.value } : prev);
   const handleChangeClose = (e: React.ChangeEvent<HTMLInputElement>) => setForm((prev) => prev ? { ...prev, closeTime: e.target.value } : prev);
-  const handleToggleBusinessDay = (idx: number) => {
-    setForm((prev) => {
-      if (!prev) return prev;
-      const next = [...prev.businessDays];
-      next[idx] = !next[idx];
-      return { ...prev, businessDays: next };
-    });
-  };
+
+  const handleToggleOpenDay = (idx: number) => {
+  setForm((prev) => {
+    if (!prev) return prev;
+    const day = DAY_LABELS[idx];
+    let nextArr = prev.openDaysArr ? [...prev.openDaysArr] : [...DAY_LABELS];
+    if (nextArr.includes(day)) {
+      nextArr = nextArr.filter(d => d !== day);
+    } else {
+      nextArr.push(day);
+      nextArr = DAY_LABELS.filter(d => nextArr.includes(d)); // 순서 보장
+    }
+    return { ...prev, openDaysArr: nextArr };
+  });
+};
   const handleTimeBlockChange = (id: number, key: keyof Pick<TimeBlock, "name" | "startTime" | "endTime">, value: string) => {
     setForm((prev) => prev ? {
       ...prev,
@@ -95,21 +102,28 @@ export default function StoreInfoEditForm() {
     if (!form) return;
     setSaving(true);
     try {
+      // 1. 매장 정보 업데이트
       await storeApi.updateStore(STORE_ID, {
         name: form.name,
         address: form.address,
         contact: form.contact,
-        closedDays: form.closedDays,
         openTime: form.openTime,
         closeTime: form.closeTime,
+        openDaysArr: form.openDaysArr, // openDaysArr를 그대로 전달
       });
 
-      // 타임(shift definition) 저장
+      // 2. 기존 타임(shift definition)을 모두 삭제
+      const existingShiftDefinitions = await storeApi.getShiftDefinitions(STORE_ID);
+      for (const def of existingShiftDefinitions) {
+        await storeApi.deleteShiftDefinition(STORE_ID, def.id);
+      }
+
+      // 3. 현재 폼에 있는 타임을 새로 생성
       for (const tb of form.timeBlocks) {
         await storeApi.createShiftDefinition(STORE_ID, {
-          title: tb.name,
-          start_time: tb.startTime,
-          end_time: tb.endTime,
+          name: tb.name,
+          startTime: tb.startTime,
+          endTime: tb.endTime,
         });
       }
       alert('저장되었습니다.');
@@ -181,32 +195,39 @@ export default function StoreInfoEditForm() {
       <div className={styles.field}>
         <p className={styles.fieldLabel}>영업요일</p>
         <div className={styles.dayToggleWrap}>
-          {DAY_LABELS.map((day, idx) => (
-            <button
-              key={day}
-              type="button"
-              onClick={() => handleToggleBusinessDay(idx)}
-              className={`
-                ${styles.dayButton} 
-                ${form.businessDays[idx] ? styles.dayButtonActive : ''}
-                dayChip
-                ${form.businessDays[idx] ? 'dayActive' : 'dayInactive'}
-              `}
-              aria-pressed={form.businessDays[idx]}
-              style={{
-                padding: '6px 10px',
-                borderRadius: '10px',
-                fontSize: '12px',
-                fontWeight: 700,
-                border: form.businessDays[idx] ? 'none' : '1px solid #e5e7eb',
-                background: form.businessDays[idx] ? '#2563eb' : '#f3f4f6',
-                color: form.businessDays[idx] ? '#fff' : '#9ca3af',
-                marginBottom: '2px',
-              }}
-            >
-              {day}
-            </button>
-          ))}
+          {DAY_LABELS.map((day, idx) => {
+            const isOpen = form.openDaysArr?.includes(day);
+            return (
+              <button
+                key={day}
+                type="button"
+                onClick={() => handleToggleOpenDay(idx)}
+                className={`
+                  ${styles.dayButton}
+                  ${isOpen ? styles.dayButtonActive : ''}
+                  dayChip
+                  ${isOpen ? 'dayActive' : 'dayInactive'}
+                `}
+                aria-pressed={isOpen}
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: '10px',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  border: isOpen ? 'none' : '1px solid #e5e7eb',
+                  background: isOpen ? '#2563eb' : '#f3f4f6',
+                  color: isOpen ? '#fff' : '#9ca3af',
+                  marginBottom: '2px',
+                  marginRight: idx < DAY_LABELS.length - 1 ? '4px' : '0',
+                  transition: 'background 0.2s, color 0.2s',
+                  outline: 'none',
+                  boxShadow: isOpen ? '0 2px 8px rgba(37,99,235,0.08)' : 'none',
+                }}
+              >
+                {day}
+              </button>
+            );
+          })}
         </div>
       </div>
       <div className={styles.field}>
