@@ -208,10 +208,7 @@ export default function StoreInfoEditForm({ onSaveSuccess }: StoreInfoEditFormPr
                 type="button"
                 onClick={() => handleToggleOpenDay(idx)}
                 className={`
-                  ${styles.dayButton}
-                  ${isOpen ? styles.dayButtonActive : ''}
-                  dayChip
-                  ${isOpen ? 'dayActive' : 'dayInactive'}
+                  ${styles.dayButton} ${isOpen ? styles.dayButtonActive : styles.dayButtonInactive}
                 `}
                 aria-pressed={isOpen}
               >

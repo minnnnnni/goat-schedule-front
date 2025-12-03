@@ -167,6 +167,12 @@
   color: #374151;
 }
 
+/* 비활성화된 기능 스타일 */
+.disabledFeature {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* --- 동적 리스트 영역 --- */
 .dynamicItem {
   position: relative;

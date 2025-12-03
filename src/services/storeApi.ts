@@ -3,20 +3,21 @@ import apiClient from '@/services/apiClient';
 // -------------------- 1. 백엔드 데이터 타입 (DB 그대로) --------------------
 export interface StoreRow {
   id: number;
-  ownerUserId: number;
+  ownerUserId?: number; // 실제 API 응답에 없으므로 선택적으로 변경
   name: string;
   address?: string;
   contact?: string;
-  openTime: string;      // "09:00:00"
-  closeTime: string;     // "22:00:00"
-  closeDays?: string;    // "일요일" 또는 "토,일" (한글 요일 문자열)
+  openTime: string;      // "09:00"
+  closeTime: string;     // "22:00"
+  closedDays?: string;    // "일요일" 또는 "토,일" (한글 요일 문자열)
 }
 
 export interface EmployeeRow {
-  employee_id: number;
-  store_id: number;
+  id: number;
   name: string;
-  phone?: string;        // 전화번호 추가
+  phone?: string;
+  email?: string;
+  maxWeeklyHours?: number;
   role?: string;
   active?: boolean;
 }
@@ -76,14 +77,14 @@ const ALL_KOR_DAYS = ["월", "화", "수", "목", "금", "토", "일"];
 function mapStoreRow(row: StoreRow): StoreView {
   // 백엔드에서 받은 closeDays (휴무일) 문자열을 기반으로 openDaysArr (영업일) 배열 생성
   let openDaysArr: string[] = [...ALL_KOR_DAYS]; // 기본값: 모든 요일 영업
-  if (row.closeDays) {
-    const closedDaysSet = new Set(row.closeDays.split(',').map(day => day.trim()));
+  if (row.closedDays) {
+    const closedDaysSet = new Set(row.closedDays.split(',').map(day => day.trim()));
     openDaysArr = ALL_KOR_DAYS.filter(day => !closedDaysSet.has(day));
   }
 
   return {
     id: row.id,
-    ownerUserId: row.ownerUserId,
+    ownerUserId: row.ownerUserId ?? 0, // ownerUserId가 없을 경우 기본값(0) 할당
     name: row.name ?? '',
     address: row.address ?? '',
     contact: row.contact ?? '',
@@ -94,7 +95,7 @@ function mapStoreRow(row: StoreRow): StoreView {
 }
 
 function mapEmployeeRow(r: EmployeeRow): EmployeeView {
-  return { id: r.employee_id, name: r.name, role: r.role, active: r.active };
+  return { id: r.id, name: r.name, role: r.role, active: r.active };
 }
 
 function mapShiftDefinitionRow(r: ShiftDefinitionRow): ShiftDefinitionView {
@@ -129,7 +130,7 @@ export interface StoreUpdatePayload {
   contact?: string;
   openTime?: string;
   closeTime?: string;
-  closeDays?: string; // "일요일" 또는 "토,일" 형태로 보냄
+  closedDays?: string; // "일요일" 또는 "토,일" 형태로 보냄
 }
 
 // 매장 정보 수정
@@ -146,7 +147,7 @@ export async function updateStore(storeId: number, viewPatch: Partial<StoreView>
   if (viewPatch.contact !== undefined) payload.contact = viewPatch.contact;
   if (viewPatch.openTime !== undefined) payload.openTime = viewPatch.openTime;
   if (viewPatch.closeTime !== undefined) payload.closeTime = viewPatch.closeTime;
-  if (closedDaysPayload !== undefined) payload.closeDays = closedDaysPayload;
+  if (closedDaysPayload !== undefined) payload.closedDays = closedDaysPayload;
   
   const res = await apiClient.put<StoreRow>(`/stores/${storeId}`, payload);
   return mapStoreRow(res.data);

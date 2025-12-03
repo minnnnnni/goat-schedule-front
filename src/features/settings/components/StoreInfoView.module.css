@@ -29,21 +29,16 @@
 .dayChip {
   padding: 10px 16px;
   border-radius: 16px;
-  font-size: 15px;
   font-weight: 700;
 }
 .dayActive {
   background: #2563eb;
   color: #fff;
-  font-size: 15px;
-  font-weight: 700;
 }
 .dayInactive {
   background: #f3f4f6;
   color: #9ca3af;
   border: 1px solid #e5e7eb;
-  font-size: 15px;
-  font-weight: 700;
 }
 .timeList {
   display: flex;

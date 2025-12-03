@@ -38,7 +38,7 @@ export default function StoreInfoView() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [STORE_ID]);
 
   if (loading) {
     return <div className={styles.field}><p className={styles.fieldValue}>불러오는 중...</p></div>;
@@ -50,8 +50,6 @@ export default function StoreInfoView() {
       </div>
     );
   }
-
-  console.log('[StoreInfoView] 5. 렌더링 직전 store 상태:', store);
 
   return (
     <div className={styles.storeInfoCard}>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Modal from "@/components/ui/Modal";
-import { getEmployees } from "@/services/employeeApi";
 import storeApi from "@/services/storeApi";
 import ScheduleResultPicker from "@/features/schedule/components/ScheduleResultPicker";
 import styles from "./GenerateSchedulePopup.module.css";
@@ -29,7 +28,7 @@ export default function GenerateSchedulePopup({ onClose, onGenerate }: { onClose
 
   // 초기 데이터 로드
   useEffect(() => {
-    getEmployees(1)
+    storeApi.getStoreEmployees(1)
       .then(data => {
         console.log('[GenerateSchedulePopup] 직원 목록:', data);
         setEmployees(Array.isArray(data) ? data : []);
@@ -136,12 +135,14 @@ export default function GenerateSchedulePopup({ onClose, onGenerate }: { onClose
               <hr className={styles.divider} />
 
               {/* 변경사항 체크박스 */}
-              <label className={styles.checkboxRow}>
+              {/* TODO: 백엔드 구현 후 disabled 속성 제거 */}
+              <label className={`${styles.checkboxRow} ${styles.disabledFeature}`}>
                 <input 
                   type="checkbox" 
                   className={styles.checkbox}
                   checked={hasChange} 
                   onChange={(e) => setHasChange(e.target.checked)} 
+                  disabled // 기능 비활성화
                 />
                 <span className={styles.checkboxLabel}>변경사항이 있습니까?</span>
               </label>
