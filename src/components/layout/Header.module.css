@@ -1,0 +1,14 @@
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* subtle breathing room */
+}
+
+.spacer {
+  width: 28px; /* keep left spacing consistent where icon was */
+  height: 28px;
+}
+
+.title90 {
+  font-size: 1.7rem; /* roughly 90% of 1rem baseline */
+}

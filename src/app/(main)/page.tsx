@@ -1,4 +1,6 @@
-export default function Page() {
-  return <div>Home Page</div>;
+import { redirect } from 'next/navigation';
+
+export default function MainGroupIndex() {
+  redirect('/');
 }
 

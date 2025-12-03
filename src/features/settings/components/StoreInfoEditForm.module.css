@@ -1,0 +1,75 @@
+.editFormCard {
+  background: #fff;
+  border: 1px solid #f3f4f6;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.inputWrapper {
+  width: 100%;
+  min-width: 0;
+}
+.dayToggleWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.dayButton {
+  padding: 10px 16px;
+  border-radius: 16px;
+  background: #f3f4f6;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.dayButtonActive {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+  font-size: 15px;
+  font-weight: 700;
+}
+.timeEditList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.timeEditCard {
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid transparent;
+  overflow: hidden;
+}
+.timeEditBlue { background: #eef2ff; border-color: #bfdbfe; }
+.timeEditGreen { background: #ecfdf5; border-color: #a7f3d0; }
+.timeEditPurple { background: #f5f3ff; border-color: #ddd6fe; }
+.timeEditHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.timeEditTitle { font-weight: 700; font-size: 13px; }
+.timeEditRow {
+  display: grid;
+  grid-template-columns: 1fr 120px 120px;
+  gap: 10px;
+  width: 100%;
+}
+.saveRow { margin-top: 8px; }
+.saveBtnLarge { height: 44px; }
+.saveBtnAccent {
+  background: #3b82f6 !important;
+  color: #fff;
+  font-weight: 700;
+  border-radius: 12px;
+  border: 2px solid #1d4ed8 !important;
+  transition: background .15s, border-color .15s;
+}
+.saveBtnAccent:hover { background: #2563eb !important; border-color: #1e40af !important; }
+.saveBtnAccent:active { background: #1d4ed8 !important; border-color: #1e3a8a !important; }
+.saveBtnAccent:disabled { opacity: .5; }

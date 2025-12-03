@@ -1,0 +1,288 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.titleWrap {
+  height: 4px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.storeIcon {
+  width: 20px;
+  height: 20px;
+  color: #111827; /* gray-900 */
+}
+
+.editBtn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: #f3f4f6; /* gray-100 */
+  color: #111827;
+  font-size: 14px;
+}
+
+.innerPanel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb; /* gray-200 */
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.fieldLabel {
+  font-size: 12px;
+  color: #6b7280; /* gray-500 */
+}
+
+.fieldValue {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 500;
+}
+
+.days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dayChip {
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.dayActive {
+  background: #e0f2fe; /* sky-100 */
+  color: #0369a1; /* sky-700 */
+  border-color: #bae6fd; /* sky-200 */
+}
+
+.dayInactive {
+  background: #f9fafb; /* gray-50 */
+  color: #6b7280;
+}
+
+.timeList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+}
+
+.timeCard {
+  border-radius: 10px;
+  padding: 10px;
+  color: #0b0f16;
+}
+
+.timeBlue { background: #dbeafe; } /* blue-100 */
+.timeGreen { background: #dcfce7; } /* green-100 */
+.timePurple { background: #ede9fe; } /* violet-100 */
+
+.timeTitle {
+  font-weight: 700;
+  font-size: 13px;
+}
+.timeSub {
+  font-size: 12px;
+  color: #374151; /* gray-700 */
+}
+.timeRange {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #111827;
+}
+
+/* Edit form */
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inputWrapper { width: 100%; }
+
+.inputRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.dayToggleWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dayButton {
+  padding: 6px 12px;
+  border-radius: 9999px;
+  background: #f3f4f6;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  font-size: 12px;
+}
+
+.dayButtonActive {
+  background: #dbeafe;
+  color: #1e3a8a;
+  border-color: #bfdbfe;
+}
+
+.timeEditList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.timeEditCard {
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.timeEditBlue { background: #eff6ff; }
+.timeEditGreen { background: #f0fdf4; }
+.timeEditPurple { background: #f5f3ff; }
+
+.timeEditHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.timeEditTitle { font-weight: 700; font-size: 13px; }
+
+.timeEditRow {
+  display: grid;
+  grid-template-columns: 1fr 120px 120px;
+  gap: 10px;
+}
+
+.saveRow { margin-top: 8px; }
+
+.saveBtnLarge { height: 44px; }
+
+.saveBtnAccent { background: inherit; }
+
+.logoutBtn {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #f3f4f6;
+}
+.container{max-width:600px;margin-left:auto;margin-right:auto;padding:16px 12px}
+.titleWrap{display:none}
+.pageTitle{display:none}
+.subtitle{display:none}
+
+.sectionCard{background:#fff;border:1px solid #f3f4f6;border-radius:16px;box-shadow:0 1px 2px rgba(0,0,0,.06);padding:16px}
+.sectionHeader{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+/* Tighter spacing between store icon and text */
+.headerLeft{display:flex;align-items:center;gap:4px;color:#111827;font-weight:700}
+/* Removed unused .iconCapsule (was for old store emoji) */
+
+.editBtn{display:inline-flex;align-items:center;padding:6px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;color:#374151;font-size:13px;font-weight:600;line-height:1}
+.editBtn:hover{background:#f9fafb}
+/* Simple store icon (no capsule) */
+.storeIcon{width:18px;height:18px;color:#374151}
+
+.innerPanel{border:1px solid #e5e7eb;border-radius:16px;padding:14px}
+.field{margin-bottom:16px}
+.fieldLabel{font-size:12px;color:#6b7280;margin-bottom:4px}
+.fieldValue{font-size:14px;font-weight:600;color:#111827}
+
+.days{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.dayChip{padding:6px 10px;border-radius:10px;font-size:12px;font-weight:700}
+.dayActive{background:#2563eb;color:#fff}
+.dayInactive{background:#f3f4f6;color:#9ca3af;border:1px solid #e5e7eb}
+
+/* Edit mode layout (deduplicated definitions) */
+/* NOTE: Earlier duplicate .editForm/.dayToggleWrap/.dayButton removed to avoid conflicting gap values */
+.saveBtnLarge{padding:14px 0;font-size:15px;font-weight:700}
+
+/* Match view-mode time cards spacing in edit mode if future editable fields added */
+.editSectionTitle{font-size:12px;color:#6b7280;font-weight:600;margin-bottom:4px}
+
+
+.timeList{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.timeCard{border-radius:12px;padding:12px;border:1px solid transparent}
+.timeTitle{font-size:14px;font-weight:800;color:#111827}
+.timeSub{font-size:13px;color:#374151;margin-top:2px}
+.timeRange{font-size:13px;color:#374151;margin-top:2px}
+.timeBlue{background:#eef2ff;border-color:#bfdbfe}
+.timeGreen{background:#ecfdf5;border-color:#a7f3d0}
+.timePurple{background:#f5f3ff;border-color:#ddd6fe}
+
+.logoutBtn{width:100%;display:flex;align-items:center;justify-content:center;gap:4px;padding:8px;border-radius:8px;border:1px solid #fecaca;background:#fee2e2;color:#dc2626;font-weight:700;margin-top:10px;font-size:13px;line-height:1;overflow:hidden;writing-mode:horizontal-tb}
+.logoutBtn:hover{background:#fecaca}
+
+/* Ensure icon size is constrained even if global svg rules exist */
+.logoutBtn svg{width:16px;height:16px;flex:0 0 16px;display:inline-block}
+
+/* Edit mode enhancements */
+.editForm{display:flex;flex-direction:column;gap:16px}
+.inputRow{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.inputWrapper{gap:6px}
+
+.dayToggleWrap{display:flex;flex-wrap:wrap;gap:6px}
+.dayButton{padding:6px 10px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid #e5e7eb;background:#f3f4f6;color:#6b7280;transition:background .15s,color .15s,border-color .15s}
+.dayButtonActive{background:#2563eb;border-color:#2563eb;color:#fff}
+.dayButton:hover:not(.dayButtonActive){background:#e5e7eb}
+
+/* Editable time blocks */
+.timeEditList{display:flex;flex-direction:column;gap:12px;margin-top:4px}
+.timeEditCard{border:1px solid transparent;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.timeEditHeader{display:flex;align-items:center;justify-content:space-between}
+.timeEditTitle{font-size:14px;font-weight:800;color:#111827}
+.timeEditColor{width:12px;height:12px;border-radius:4px}
+.colorBlue{background:#3b82f6}
+.colorGreen{background:#10b981}
+.colorPurple{background:#8b5cf6}
+
+/* Edit-mode colored cards (stronger border + subtle shadow for focus) */
+.timeEditBlue{background:#eef2ff;border:1px solid #bfdbfe;box-shadow:0 1px 2px rgba(30,58,138,0.08)}
+.timeEditGreen{background:#ecfdf5;border:1px solid #a7f3d0;box-shadow:0 1px 2px rgba(6,95,70,0.08)}
+.timeEditPurple{background:#f5f3ff;border:1px solid #ddd6fe;box-shadow:0 1px 2px rgba(91,33,182,0.08)}
+
+/* Accent save button (single source of truth) */
+.saveBtnAccent{background:#3b82f6 !important;color:#fff;font-weight:700;border-radius:12px;box-shadow:none !important;position:relative;border:2px solid #1d4ed8 !important;transition:background .15s,border-color .15s}
+.saveBtnAccent:hover{background:#2563eb !important;border-color:#1e40af !important}
+.saveBtnAccent:active{background:#1d4ed8 !important;border-color:#1e3a8a !important}
+.saveBtnAccent:focus,.saveBtnAccent:focus-visible{outline:none;box-shadow:none !important}
+.saveBtnAccent:disabled{opacity:.5}
+
+/* New contrast approach: neutral card + left color stripe */
+.timeEditCardStripe{position:relative;padding-left:16px}
+.timeEditCardStripe::before{content:"";position:absolute;inset:0  auto 0 0;width:6px;border-radius:12px 0 0 12px}
+.stripeBlue::before{background:#3b82f6}
+.stripeGreen::before{background:#10b981}
+.stripePurple::before{background:#8b5cf6}
+.timeEditRow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.saveRow{margin-top:4px}
