@@ -1,7 +1,7 @@
 "use client";
 
-
 import { useEffect, useState } from "react";
+import { PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
 import styles from "./StoreInfoEditForm.module.css";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
@@ -15,32 +15,13 @@ export type TimeBlock = {
   endTime: string;
 };
 
+interface StoreInfoEditFormProps {
+  onSaveSuccess: () => void;
+}
+
 const DAY_LABELS = ["월", "화", "수", "목", "금", "토", "일"];
 
-export default function StoreInfoEditForm() {
-    // 타임 추가
-    const handleAddTimeBlock = () => {
-      setForm(prev => prev ? {
-        ...prev,
-        timeBlocks: [
-          ...prev.timeBlocks,
-          {
-            id: Date.now(),
-            name: '',
-            startTime: '',
-            endTime: '',
-          }
-        ]
-      } : prev);
-    };
-
-    // 타임 삭제
-    const handleRemoveTimeBlock = (id: number) => {
-      setForm(prev => prev ? {
-        ...prev,
-        timeBlocks: prev.timeBlocks.filter(tb => tb.id !== id)
-      } : prev);
-    };
+export default function StoreInfoEditForm({ onSaveSuccess }: StoreInfoEditFormProps) {
   const STORE_ID = 1; // TODO: auth/route에서 가져오도록 교체
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -72,6 +53,30 @@ export default function StoreInfoEditForm() {
       }
     })();
   }, []);
+
+  // 타임 추가
+  const handleAddTimeBlock = () => {
+    setForm(prev => prev ? {
+      ...prev,
+      timeBlocks: [
+        ...prev.timeBlocks,
+        {
+          id: Date.now(), // 임시 ID
+          name: '',
+          startTime: '',
+          endTime: '',
+        }
+      ]
+    } : prev);
+  };
+
+  // 타임 삭제
+  const handleRemoveTimeBlock = (id: number) => {
+    setForm(prev => prev ? {
+      ...prev,
+      timeBlocks: prev.timeBlocks.filter(tb => tb.id !== id)
+    } : prev);
+  };
 
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => setForm((prev) => prev ? { ...prev, name: e.target.value } : prev);
   const handleChangeOpen = (e: React.ChangeEvent<HTMLInputElement>) => setForm((prev) => prev ? { ...prev, openTime: e.target.value } : prev);
@@ -126,7 +131,7 @@ export default function StoreInfoEditForm() {
           endTime: tb.endTime,
         });
       }
-      alert('저장되었습니다.');
+      onSaveSuccess();
     } catch {
       alert('저장 중 오류가 발생했습니다.');
     } finally {
@@ -145,7 +150,7 @@ export default function StoreInfoEditForm() {
   const colorClasses = [styles.timeEditBlue, styles.timeEditGreen, styles.timeEditPurple];
 
   return (
-    <div className={styles.editFormCard}>
+    <form className={styles.editFormCard} onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
       <Input
         label="매장명"
         value={form.name}
@@ -209,20 +214,6 @@ export default function StoreInfoEditForm() {
                   ${isOpen ? 'dayActive' : 'dayInactive'}
                 `}
                 aria-pressed={isOpen}
-                style={{
-                  padding: '6px 10px',
-                  borderRadius: '10px',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  border: isOpen ? 'none' : '1px solid #e5e7eb',
-                  background: isOpen ? '#2563eb' : '#f3f4f6',
-                  color: isOpen ? '#fff' : '#9ca3af',
-                  marginBottom: '2px',
-                  marginRight: idx < DAY_LABELS.length - 1 ? '4px' : '0',
-                  transition: 'background 0.2s, color 0.2s',
-                  outline: 'none',
-                  boxShadow: isOpen ? '0 2px 8px rgba(37,99,235,0.08)' : 'none',
-                }}
               >
                 {day}
               </button>
@@ -231,10 +222,10 @@ export default function StoreInfoEditForm() {
         </div>
       </div>
       <div className={styles.field}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+        <div className={styles.fieldHeader}>
           <p className={styles.fieldLabel}>타임 설정</p>
-          <button type="button" onClick={handleAddTimeBlock} style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#f3f4f6', border: 'none', borderRadius: 8, padding: '4px 10px', fontWeight: 700, cursor: 'pointer', fontSize: 15 }}>
-            <span style={{ fontSize: 18, fontWeight: 900 }}>+</span> 타임 추가
+          <button type="button" onClick={handleAddTimeBlock} className={styles.addTimeButton}>
+            <PlusIcon className={styles.addTimeIcon} /> 타임 추가
           </button>
         </div>
         <div className={styles.timeEditList}>
@@ -244,17 +235,16 @@ export default function StoreInfoEditForm() {
               <div
                 key={tb.id}
                 className={`${styles.timeEditCard} ${colorClass}`}
-                style={{ position: 'relative' }}
               >
                 <div className={styles.timeEditHeader}>
                   <span className={styles.timeEditTitle}>{`타임 ${idx + 1}`}</span>
                   <button
                     type="button"
                     onClick={() => handleRemoveTimeBlock(tb.id)}
-                    style={{ background: 'none', border: 'none', color: '#e11d48', fontSize: 22, fontWeight: 900, cursor: 'pointer', marginLeft: 8 }}
+                    className={styles.removeTimeButton}
                     aria-label="타임 삭제"
                   >
-                    ×
+                    <TrashIcon />
                   </button>
                 </div>
                 <div className={styles.timeEditRow}>
@@ -292,7 +282,7 @@ export default function StoreInfoEditForm() {
       </div>
       <div className={styles.saveRow}>
         <Button
-          onClick={handleSave}
+          type="submit"
           disabled={!!saving}
           className={`w-full ${styles.saveBtnLarge} ${styles.saveBtnAccent}`}
           size="lg"
@@ -301,6 +291,6 @@ export default function StoreInfoEditForm() {
           {saving ? "저장 중..." : "저장"}
         </Button>
       </div>
-    </div>
+    </form>
   );
 }

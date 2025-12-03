@@ -18,6 +18,11 @@ export default function SettingsPage() {
     setIsEditing((prev) => !prev);
   };
 
+  const handleSaveSuccess = () => {
+    alert('저장되었습니다.');
+    setIsEditing(false);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.titleWrap} />
@@ -33,7 +38,7 @@ export default function SettingsPage() {
           </button>
         </div>
         
-        {!isEditing ? <StoreInfoView /> : <StoreInfoEditForm />}
+        {!isEditing ? <StoreInfoView /> : <StoreInfoEditForm onSaveSuccess={handleSaveSuccess} />}
       </section>
 
       <button onClick={handleLogout} className={styles.logoutBtn}>
@@ -43,4 +48,3 @@ export default function SettingsPage() {
     </div>
   );
 }
-
