@@ -1,32 +1,28 @@
 
 'use client';
 
-// 로그인 체크 및 임시 토큰 삽입 (개발용)
-if (typeof window !== 'undefined') {
-  // 개발용: 임시 토큰 강제 삽입 (실제 토큰 값으로 교체 필요)
-  if (!localStorage.getItem('access_token')) {
-    localStorage.setItem('access_token', 'test-access-token'); // 실제 토큰 값으로 교체
-  }
-  // 토큰 없으면 로그인 페이지로 이동
-  const token = localStorage.getItem('access_token');
-  if (!token) {
-    window.location.href = '/login';
-    // SSR 환경에서는 return null 필요
-  }
-}
-
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Calendar from '@/components/ui/Calendar';
 import DailyScheduleSection from '@/components/schedule/DailyScheduleSection';
 import EmployeeAssignModal from '@/features/schedule/components/EmployeeAssignModal';
 import { useShiftsForDate } from '@/features/schedule/hooks/useShifts';
 
 export default function CalendarPage() {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  // 인증 로직을 useEffect로 이동하여 컴포넌트 생명주기에 맞게 관리
+  useEffect(() => {
+    // 개발용: 임시 토큰 강제 삽입
+    if (!localStorage.getItem('access_token')) {
+      localStorage.setItem('access_token', 'test-access-token');
+    }
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      window.location.href = '/login';
+    }
+  }, []);
+
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const { shifts } = useShiftsForDate(selectedDate);
   const [showModal, setShowModal] = useState(false);
-  const [selectedTime, setSelectedTime] = useState<'오류'|'확인'|'초기값'|null>(null);
-  const [selectedEmployee, setSelectedEmployee] = useState<string>("");
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
@@ -36,19 +32,29 @@ export default function CalendarPage() {
     setShowModal(true);
   };
 
-  const handleModalClose = () => {
+  // useCallback으로 함수 재생성 방지
+  const handleModalClose = useCallback(() => {
     setShowModal(false);
-    setSelectedTime(null);
-    setSelectedEmployee("");
+  }, []);
+
+  // 모달에서 '배정하기' 버튼 클릭 시 실행될 콜백 함수
+  const handleAssignEmployee = (timeBlock: string, employeeId: string) => {
+    console.log(
+      `[배정 완료] 날짜: ${selectedDate?.toLocaleDateString()}, 시간대: ${timeBlock}, 근무자 ID: ${employeeId}`
+    );
+    // TODO: 실제 배정 로직 구현 (API 호출 등)
+    // 예: useMutation 훅을 사용하여 서버에 데이터 전송
   };
 
-  const handleSetTime = (t: string) => 
-    setSelectedTime(t as "오류" | "확인" | "초기값" | null);
-
-
-
-
-
+  // 날짜 포맷팅 함수 (예: "7월 26일 (금)")
+  const formatDateForModal = (date: Date | null) => {
+    if (!date) return '';
+    return date.toLocaleDateString('ko-KR', {
+      month: 'long',
+      day: 'numeric',
+      weekday: 'short',
+    });
+  };
 
   return (
     <div className="max-w-[600px] mx-auto px-4 py-5">
@@ -69,16 +75,15 @@ export default function CalendarPage() {
       />
 
       {/* 알바생 추가/수정 모달 (분리된 컴포넌트) */}
-      <EmployeeAssignModal
-        open={showModal}
+      {selectedDate && (
+        <EmployeeAssignModal
+        isOpen={showModal}
         onClose={handleModalClose}
-        selectedDate={selectedDate}
-        selectedTime={selectedTime}
-        setSelectedTime={handleSetTime}
-        selectedEmployee={selectedEmployee}
-        setSelectedEmployee={setSelectedEmployee}
-      />
+        date={formatDateForModal(selectedDate)}
+        // TODO: 실제 매장 ID를 동적으로 전달해야 합니다.
+        storeId={1}
+        onAssign={handleAssignEmployee}
+      />)}
     </div>
   );
 }
-

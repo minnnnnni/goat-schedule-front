@@ -4,14 +4,13 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0,0,0,0.08);
+  background: rgba(0, 0, 0, 0.3);
   z-index: 50;
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
 }
-
 
 
 .modal {
@@ -29,12 +28,11 @@
   margin: auto;
 }
 
-
 .header {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px 20px;
+  padding: 12px 20px;
   border-bottom: 1px solid #e5e7eb;
   background: #fff;
   position: relative;
@@ -66,9 +64,10 @@
 
 
 .headerDate {
-  font-size: 15px;
-  color: #888;
-  margin-top: 4px;
+  font-size: 14px;
+  color: #6b7280;
+  margin-left: 8px;
+  font-weight: 500;
 }
 
 
@@ -121,41 +120,22 @@
   transition: all 0.2s;
   gap: 2px;
 }
-.timeBlockBtn.morning {
+
+.morning {
+  composes: timeBlockBtn;
   background: #e3edff;
   color: #2563eb;
 }
-.timeBlockBtn.middle {
+.middle {
+  composes: timeBlockBtn;
   background: #d6f5d6;
   color: #22c55e;
 }
-.timeBlockBtn.afternoon {
+.afternoon {
+  composes: timeBlockBtn;
   background: #ede3ff;
   color: #9333ea;
 }
-
-
-
-.timeBlockBtn.selected {
-  border: 2px solid #2563eb;
-  box-shadow: 0 2px 8px rgba(37,99,235,0.12);
-  font-weight: 900;
-  filter: brightness(1.08);
-  z-index: 1;
-}
-.timeBlockBtn.morning {
-  background: #e3edff;
-  color: #2563eb;
-}
-.timeBlockBtn.middle {
-  background: #d6f5d6;
-  color: #22c55e;
-}
-.timeBlockBtn.afternoon {
-  background: #ede3ff;
-  color: #9333ea;
-}
-
 
 .timeBlockTime {
   font-size: 12px;
@@ -164,6 +144,37 @@
   white-space: nowrap;
 }
 
+/* 스켈레톤 UI 스타일 */
+.skeleton {
+  background-color: #e5e7eb;
+  cursor: default;
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+.errorText {
+  color: #ef4444;
+  font-size: 14px;
+  text-align: center;
+  width: 100%;
+}
+
+/* .selected 클래스는 그대로 유지합니다. */
+.selected {
+  border: 2px solid #2563eb;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.12);
+  font-weight: 900;
+  filter: brightness(1.08);
+  z-index: 1;
+}
 
 .selectLabel {
   font-size: 16px;
