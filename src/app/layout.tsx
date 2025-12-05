@@ -16,10 +16,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
       <body className="m-0 p-0 antialiased bg-gray-50 min-h-screen">
-        {/* 각 segment((main), (auth) 등)에서 자체 레이아웃 구성 */}
         {children}
+        
+        {/* <Script ... />  <-- 여기 있던 Script 태그도 삭제하세요 */}
       </body>
     </html>
   );
 }
-
