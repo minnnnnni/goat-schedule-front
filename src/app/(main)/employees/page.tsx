@@ -6,41 +6,41 @@ import { useRouter } from 'next/navigation';
 import { PhoneIcon, ClockIcon } from '@heroicons/react/24/outline';
 import styles from './EmployeePage.module.css';
 
-// 알바생 타입 정의 (임시)
+// [수정] 알바생 타입 정의 (다중 타임 지원)
 interface Employee {
   id: number;
   name: string;
   phone: string;
-  shift: 'morning' | 'middle' | 'evening';
-  shiftName: string; 
+  shifts: ('morning' | 'middle' | 'evening')[]; // 배열로 변경
+  shiftNames: string[]; // ['오전', '미들'] 등
   workDays: string[];
 }
 
-// 임시 데이터 (피그마 디자인에 있는 데이터 반영)
+// [수정] 임시 데이터 (다중 타임 예시 포함)
 const mockEmployees: Employee[] = [
   {
     id: 1,
     name: '박준형',
     phone: '010-1234-5678',
-    shift: 'evening',
-    shiftName: '오후',
-    workDays: ['월', '화', '수', '목', '금'], // 평일
+    shifts: ['evening', 'middle'], // 예시: 두 가지 타임
+    shiftNames: ['오후', '미들'],
+    workDays: ['월', '화', '수', '목', '금'], 
   },
   {
     id: 2,
     name: '이지은',
     phone: '010-1234-5678',
-    shift: 'middle',
-    shiftName: '미들',
-    workDays: ['월', '화', '수', '목', '금', '토', '일'], // 매일
+    shifts: ['middle'],
+    shiftNames: ['미들'],
+    workDays: ['월', '화', '수', '목', '금', '토', '일'],
   },
   {
     id: 3,
     name: '김민수',
     phone: '010-1234-5678',
-    shift: 'morning',
-    shiftName: '오전',
-    workDays: ['토', '일'], // 주말
+    shifts: ['morning'],
+    shiftNames: ['오전'],
+    workDays: ['토', '일'], 
   },
 ];
 
@@ -49,12 +49,10 @@ const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
 export default function EmployeeListPage() {
   const router = useRouter();
 
-  // [기능] 알바생 추가 페이지로 이동 (빈 폼)
   const goToAddPage = () => {
     router.push('/employees/form?mode=add'); 
   };
 
-  // [기능] 알바생 수정 페이지로 이동 (기존 데이터 로딩용 ID 전달)
   const goToEditPage = (id: number) => {
     router.push(`/employees/form?mode=edit&id=${id}`);
   };
@@ -88,9 +86,12 @@ export default function EmployeeListPage() {
             {/* 카드 헤더 */}
             <div className={styles.cardHeader}>
               <div className={styles.profileGroup}>
-                <span className={`${styles.shiftBadge} ${styles[emp.shift]}`}>
-                  {emp.shiftName}
-                </span>
+                {/* [수정] 여러 개의 타임 뱃지 렌더링 */}
+                {emp.shifts.map((shiftType, index) => (
+                  <span key={index} className={`${styles.shiftBadge} ${styles[shiftType]}`}>
+                    {emp.shiftNames[index]}
+                  </span>
+                ))}
                 <span className={styles.employeeName}>{emp.name}</span>
               </div>
               <button className={styles.editButton} onClick={() => goToEditPage(emp.id)}>
