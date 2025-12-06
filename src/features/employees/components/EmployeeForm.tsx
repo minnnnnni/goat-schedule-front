@@ -3,23 +3,22 @@
 import React, { useState, useEffect } from 'react';
 import styles from './EmployeeForm.module.css';
 
-// 타입 정의
+// 타입 정의 업데이트: selectedShift -> selectedShifts (배열)
 export interface EmployeeFormData {
   name: string;
   phone: string;
   selectedDays: string[];
-  selectedShift: string;
+  selectedShifts: string[]; 
 }
 
 interface EmployeeFormProps {
-  initialData?: EmployeeFormData; // 수정 시 초기 데이터
-  onSubmit: (data: EmployeeFormData) => void; // 저장 버튼 클릭 시 실행될 함수
+  initialData?: EmployeeFormData;
+  onSubmit: (data: EmployeeFormData) => void;
   mode: 'add' | 'edit';
 }
 
 const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
 
-// 타임 데이터 (예시 - 나중에는 API로 받아와야 함)
 const SHIFT_OPTIONS = [
   { id: 'morning', name: '오전', time: '09:00 - 14:00' },
   { id: 'middle', name: '미들', time: '14:00 - 18:00' },
@@ -27,25 +26,21 @@ const SHIFT_OPTIONS = [
 ];
 
 export default function EmployeeForm({ initialData, onSubmit, mode }: EmployeeFormProps) {
-  // 폼 상태 관리
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
-  const [selectedShift, setSelectedShift] = useState<string>('');
+  // [수정] 다중 선택을 위해 배열로 상태 관리
+  const [selectedShifts, setSelectedShifts] = useState<string[]>([]);
 
-  // 초기 데이터가 있으면 채워넣기 (수정 모드)
-  // initialData가 변경될 때만 실행됩니다.
   useEffect(() => {
     if (initialData) {
-      // setTimeout을 사용하여 비동기적으로 상태를 업데이트합니다.
-      // 이를 통해 "Calling setState synchronously within an effect" 에러를 방지합니다.
       const timer = setTimeout(() => {
         setName(initialData.name || '');
         setPhone(initialData.phone || '');
         setSelectedDays(initialData.selectedDays || []);
-        setSelectedShift(initialData.selectedShift || '');
+        // [수정] 초기 데이터도 배열로 받음
+        setSelectedShifts(initialData.selectedShifts || []);
       }, 0);
-
       return () => clearTimeout(timer);
     }
   }, [initialData]);
@@ -56,14 +51,22 @@ export default function EmployeeForm({ initialData, onSubmit, mode }: EmployeeFo
     );
   };
 
+  // [추가] 타임 중복 선택 토글 함수
+  const toggleShift = (shiftId: string) => {
+    setSelectedShifts(prev => 
+      prev.includes(shiftId) 
+        ? prev.filter(id => id !== shiftId) // 이미 있으면 제거
+        : [...prev, shiftId] // 없으면 추가
+    );
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ name, phone, selectedDays, selectedShift });
+    onSubmit({ name, phone, selectedDays, selectedShifts });
   };
 
   return (
     <form onSubmit={handleSubmit} className={styles.formContainer}>
-      {/* 이름 입력 */}
       <div className={styles.formGroup}>
         <label className={styles.label}>이름 *</label>
         <input 
@@ -76,7 +79,6 @@ export default function EmployeeForm({ initialData, onSubmit, mode }: EmployeeFo
         />
       </div>
 
-      {/* 전화번호 입력 */}
       <div className={styles.formGroup}>
         <label className={styles.label}>전화번호 *</label>
         <input 
@@ -89,7 +91,6 @@ export default function EmployeeForm({ initialData, onSubmit, mode }: EmployeeFo
         />
       </div>
 
-      {/* 근무 요일 선택 */}
       <div className={styles.formGroup}>
         <label className={styles.label}>근무 요일 *</label>
         <div className={styles.daySelector}>
@@ -106,7 +107,6 @@ export default function EmployeeForm({ initialData, onSubmit, mode }: EmployeeFo
         </div>
       </div>
 
-      {/* 타임 선택 */}
       <div className={styles.formGroup}>
         <label className={styles.label}>타임 선택 *</label>
         <div className={styles.timeSelectionGroup}>
@@ -114,8 +114,10 @@ export default function EmployeeForm({ initialData, onSubmit, mode }: EmployeeFo
             <button
               key={shift.id}
               type="button"
-              className={`${styles.timeButton} ${selectedShift === shift.id ? styles.active : ''}`}
-              onClick={() => setSelectedShift(shift.id)}
+              // [수정] 배열에 포함되어 있는지 확인하여 active 처리
+              className={`${styles.timeButton} ${selectedShifts.includes(shift.id) ? styles.active : ''}`}
+              // [수정] 클릭 시 토글 함수 호출
+              onClick={() => toggleShift(shift.id)}
             >
               <span className={styles.timeName}>{shift.name}</span>
               <span className={styles.timeRange}>{shift.time}</span>
@@ -124,7 +126,6 @@ export default function EmployeeForm({ initialData, onSubmit, mode }: EmployeeFo
         </div>
       </div>
 
-      {/* 하단 버튼 */}
       <div className={styles.submitButtonWrapper}>
         <button type="submit" className={styles.submitButton}>
           {mode === 'add' ? '알바생 추가' : '수정 완료'}
