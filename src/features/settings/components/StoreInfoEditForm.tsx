@@ -155,26 +155,26 @@ export default function StoreInfoEditForm({ onSaveSuccess }: StoreInfoEditFormPr
         label="매장명"
         value={form.name}
         onChange={handleChangeName}
-        wrapperClassName={styles.inputWrapper}
+        wrapperClassName={`${styles.inputWrapper} ${styles.mainInfoInput}`}
         variant="soft"
-        size="lg"
+        size="xl"
       />
       <Input
         label="매장 주소"
         value={form.address ?? ''}
         onChange={e => setForm(prev => prev ? { ...prev, address: e.target.value } : prev)}
-        wrapperClassName={styles.inputWrapper}
+        wrapperClassName={`${styles.inputWrapper} ${styles.mainInfoInput}`}
         variant="soft"
-        size="lg"
+        size="xl"
         style={{ marginTop: 8 }}
       />
       <Input
         label="연락처"
         value={form.contact ?? ''}
         onChange={e => setForm(prev => prev ? { ...prev, contact: e.target.value } : prev)}
-        wrapperClassName={styles.inputWrapper}
+        wrapperClassName={`${styles.inputWrapper} ${styles.mainInfoInput}`}
         variant="soft"
-        size="lg"
+        size="xl"
         style={{ marginTop: 8 }}
       />
       <div className={styles.inputRow}>
@@ -183,18 +183,18 @@ export default function StoreInfoEditForm({ onSaveSuccess }: StoreInfoEditFormPr
           type="time"
           value={form.openTime}
           onChange={handleChangeOpen}
-          wrapperClassName={styles.inputWrapper}
+          wrapperClassName={`${styles.inputWrapper} ${styles.mainInfoInput}`}
           variant="soft"
-          size="md"
+          size="xl"
         />
         <Input
           label="종료시간"
           type="time"
           value={form.closeTime}
           onChange={handleChangeClose}
-          wrapperClassName={styles.inputWrapper}
+          wrapperClassName={`${styles.inputWrapper} ${styles.mainInfoInput}`}
           variant="soft"
-          size="md"
+          size="xl"
         />
       </div>
       <div className={styles.field}>

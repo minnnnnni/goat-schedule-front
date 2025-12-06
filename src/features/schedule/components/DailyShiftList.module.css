@@ -1,0 +1,70 @@
+.shiftList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shiftBlock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.shiftInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.shiftType {
+  border-radius: 99px;
+  padding: 5px 12px;
+  font-weight: 600;
+  font-size: 13px;
+  min-width: 50px;
+  text-align: center;
+}
+
+.typeMorning {
+  background: #ecfdf5; /* green-50 */
+  color: #047857; /* green-700 */
+}
+.typeMiddle {
+  background: #eff6ff; /* blue-50 */
+  color: #1d4ed8; /* blue-700 */
+}
+.typeAfternoon {
+  background: #fef2f2; /* red-50 */
+  color: #b91c1c; /* red-700 */
+}
+
+.shiftTime {
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.employeeInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.employeeName {
+  font-weight: 600;
+  font-size: 15px;
+  color: #1f2937;
+}
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  color: #9ca3af;
+  text-align: center;
+  font-size: 15px;
+}

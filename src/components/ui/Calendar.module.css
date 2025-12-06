@@ -33,6 +33,7 @@
     0 2px 6px rgba(0, 0, 0, 0.06),
     inset 0 -1px 0 rgba(0, 0, 0, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  cursor: pointer;
   transition: color 0.15s ease, background 0.15s ease, transform 0.06s ease;
 }
 
@@ -51,7 +52,7 @@
 .navIcon { width: 14px; height: 14px; }
 
 .monthTitle {
-  font-size: 15px; /* slightly smaller */
+  font-size: 21px;
   font-weight: 700; /* font-bold */
   color: #111827; /* text-gray-900 */
 }
@@ -59,12 +60,14 @@
 .weekGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  margin-bottom: 6px; /* tighter */
+  margin-bottom: 8px; /* 선과 날짜 사이의 간격 */
+  padding-bottom: 8px; /* 요일과 선 사이의 간격 */
+  border-bottom: 1px solid #f3f4f6; /* 연한 회색 선 추가 */
 }
 
 .weekCell {
   text-align: center;
-  font-size: 11px; /* smaller */
+  font-size: 15px;
   font-weight: 600; /* font-semibold */
   color: #6b7280; /* text-gray-500 */
   padding: 6px 0; /* smaller vertical */
@@ -82,7 +85,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px; /* tighter */
+  font-size: 17px;
   color: #1f2937; /* text-gray-800 */
   border-radius: 10px; /* slightly smaller radius */
   transition: background 0.15s ease, color 0.15s ease;
@@ -103,12 +106,16 @@
 }
 
 .daySelected {
-  background: #0b1220; /* near-black */
+  background: #f97316; /* 주황색으로 변경 (orange-500) */
   color: #ffffff;
   font-weight: 700; /* font-bold */
-  box-shadow: 0 4px 10px rgba(17, 24, 39, 0.16); /* slightly lighter */
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25); /* 주황색 계열 그림자로 변경 */
 }
 
 .dayToday {
   font-weight: 700; /* emphasize today when not selected */
+}
+
+.weekend {
+  color: #2563eb; /* blue-600 */
 }

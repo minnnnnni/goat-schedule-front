@@ -40,7 +40,6 @@ export default function SettingsPage() {
         
         {!isEditing ? <StoreInfoView /> : <StoreInfoEditForm onSaveSuccess={handleSaveSuccess} />}
       </section>
-
       <button onClick={handleLogout} className={styles.logoutBtn}>
         <ArrowRightStartOnRectangleIcon className="w-4 h-4" aria-hidden="true" />
         로그아웃

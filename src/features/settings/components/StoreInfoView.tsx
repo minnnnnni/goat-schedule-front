@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import styles from "./StoreInfoView.module.css";
 import storeApi from "@/services/storeApi";
-import type { StoreView, EmployeeView, ShiftDefinitionView } from "@/services/storeApi";
+import type { StoreView, ShiftDefinitionView } from "@/services/storeApi";
 
 // ShiftDefinitionView 타입을 그대로 사용
 
@@ -12,25 +12,33 @@ export default function StoreInfoView() {
   const STORE_ID = 1; // TODO: auth/route에서 가져오도록 교체
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [apiErrors, setApiErrors] = useState<{store?: string; shift?: string; employees?: string}>({});
   const [store, setStore] = useState<StoreView | null>(null);
   const [timeBlocks, setTimeBlocks] = useState<ShiftDefinitionView[]>([]);
-  const [employees, setEmployees] = useState<EmployeeView[]>([]);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
       setError(null); // 에러 상태 초기화
+
       try {
-        const [storeData, shiftDefs, employeesData] = await Promise.all([
+        const results = await Promise.allSettled([
           storeApi.getStore(STORE_ID),
           storeApi.getShiftDefinitions(STORE_ID),
-          storeApi.getStoreEmployees(STORE_ID),
         ]);
 
-        setStore(storeData);
-        setTimeBlocks(shiftDefs || []);
-        setEmployees(employeesData || []);
+        const [storeResult, shiftResult] = results;
+
+        if (storeResult.status === 'fulfilled') {
+          setStore(storeResult.value);
+        } else {
+          console.error('Failed to fetch store:', storeResult.reason);
+          setError('매장 기본 정보를 불러올 수 없습니다.');
+          // 매장 기본 정보가 없으면 더 이상 진행하지 않음
+          return;
+        }
+
+        if (shiftResult.status === 'fulfilled') setTimeBlocks(shiftResult.value || []);
+
       } catch (err) {
         console.error('Failed to fetch store info:', err);
         setError('매장 정보를 불러오는 중 오류가 발생했습니다.');

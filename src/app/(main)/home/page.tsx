@@ -1,6 +1,5 @@
 "use client";
 
-
 import DailyScheduleView from '@/features/home/components/DailyScheduleView';
 import { PlusIcon } from "@heroicons/react/20/solid";
 import styles from './HomePage.module.css';

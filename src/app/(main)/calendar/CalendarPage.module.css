@@ -1,0 +1,11 @@
+.container {
+  max-width: 480px; /* 다른 페이지와 최대 너비 통일 */
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9fafb; /* 전체 배경색과 통일 */
+  min-height: calc(100vh - 52px); /* 헤더 높이를 제외한 전체 높이 */
+}
+
+.calendarWrapper {
+  margin-bottom: 24px;
+}

@@ -1,3 +1,22 @@
+.header {
+  min-height: 60px; /* 헤더 높이 증가 */
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  position: relative;
+}
+
+/* 하단 구분선 */
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;  /* 좌우 여백 제거 */
+  right: 0; /* 좌우 여백 제거 */
+  height: 1px;
+  background-color: #e5e7eb; /* gray-200 */
+}
+
 .titleRow {
   display: flex;
   align-items: center;
@@ -9,6 +28,7 @@
   height: 28px;
 }
 
-.title90 {
-  font-size: 1.7rem; /* roughly 90% of 1rem baseline */
+.title {
+  font-size: 30px; /* 폰트 크기 증가 (32px) */
+  font-weight: 550;
 }

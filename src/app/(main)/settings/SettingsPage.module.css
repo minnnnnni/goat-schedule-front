@@ -16,19 +16,6 @@
   margin-bottom: 8px;
 }
 
-.headerLeft {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-}
-
-.storeIcon {
-  width: 20px;
-  height: 20px;
-  color: #111827; /* gray-900 */
-}
-
 .editBtn {
   padding: 6px 12px;
   border-radius: 8px;
@@ -189,7 +176,7 @@
 .saveBtnAccent { background: inherit; }
 
 .logoutBtn {
-  margin-top: 12px;
+  margin-top: 10px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -206,12 +193,20 @@
 .sectionHeader{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 /* Tighter spacing between store icon and text */
 .headerLeft{display:flex;align-items:center;gap:4px;color:#111827;font-weight:700}
+.headerLeft {
+  font-size: 20px; /* 글자 크기 키움 */
+}
 /* Removed unused .iconCapsule (was for old store emoji) */
 
 .editBtn{display:inline-flex;align-items:center;padding:6px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;color:#374151;font-size:13px;font-weight:600;line-height:1}
+.editBtn {
+  font-size: 16px; /* 글자 크기 키움 */
+  padding: 8px 16px; /* 버튼 크기 키움 */
+}
 .editBtn:hover{background:#f9fafb}
 /* Simple store icon (no capsule) */
 .storeIcon{width:18px;height:18px;color:#374151}
+.storeIcon { width: 22px; height: 22px; } /* 아이콘 크기도 함께 키움 */
 
 .innerPanel{border:1px solid #e5e7eb;border-radius:16px;padding:14px}
 .field{margin-bottom:16px}
@@ -240,49 +235,10 @@
 .timeGreen{background:#ecfdf5;border-color:#a7f3d0}
 .timePurple{background:#f5f3ff;border-color:#ddd6fe}
 
-.logoutBtn{width:100%;display:flex;align-items:center;justify-content:center;gap:4px;padding:8px;border-radius:8px;border:1px solid #fecaca;background:#fee2e2;color:#dc2626;font-weight:700;margin-top:10px;font-size:13px;line-height:1;overflow:hidden;writing-mode:horizontal-tb}
+.logoutBtn{width:100%;display:flex;align-items:center;justify-content:center;gap:4px;padding:8px;border-radius:8px;border:1px solid #fecaca;background:#fee2e2;color:#dc2626;font-weight:700;font-size:24px;line-height:2;overflow:hidden;writing-mode:horizontal-tb}
 .logoutBtn:hover{background:#fecaca}
 
 /* Ensure icon size is constrained even if global svg rules exist */
 .logoutBtn svg{width:16px;height:16px;flex:0 0 16px;display:inline-block}
 
-/* Edit mode enhancements */
-.editForm{display:flex;flex-direction:column;gap:16px}
-.inputRow{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.inputWrapper{gap:6px}
 
-.dayToggleWrap{display:flex;flex-wrap:wrap;gap:6px}
-.dayButton{padding:6px 10px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid #e5e7eb;background:#f3f4f6;color:#6b7280;transition:background .15s,color .15s,border-color .15s}
-.dayButtonActive{background:#2563eb;border-color:#2563eb;color:#fff}
-.dayButton:hover:not(.dayButtonActive){background:#e5e7eb}
-
-/* Editable time blocks */
-.timeEditList{display:flex;flex-direction:column;gap:12px;margin-top:4px}
-.timeEditCard{border:1px solid transparent;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
-.timeEditHeader{display:flex;align-items:center;justify-content:space-between}
-.timeEditTitle{font-size:14px;font-weight:800;color:#111827}
-.timeEditColor{width:12px;height:12px;border-radius:4px}
-.colorBlue{background:#3b82f6}
-.colorGreen{background:#10b981}
-.colorPurple{background:#8b5cf6}
-
-/* Edit-mode colored cards (stronger border + subtle shadow for focus) */
-.timeEditBlue{background:#eef2ff;border:1px solid #bfdbfe;box-shadow:0 1px 2px rgba(30,58,138,0.08)}
-.timeEditGreen{background:#ecfdf5;border:1px solid #a7f3d0;box-shadow:0 1px 2px rgba(6,95,70,0.08)}
-.timeEditPurple{background:#f5f3ff;border:1px solid #ddd6fe;box-shadow:0 1px 2px rgba(91,33,182,0.08)}
-
-/* Accent save button (single source of truth) */
-.saveBtnAccent{background:#3b82f6 !important;color:#fff;font-weight:700;border-radius:12px;box-shadow:none !important;position:relative;border:2px solid #1d4ed8 !important;transition:background .15s,border-color .15s}
-.saveBtnAccent:hover{background:#2563eb !important;border-color:#1e40af !important}
-.saveBtnAccent:active{background:#1d4ed8 !important;border-color:#1e3a8a !important}
-.saveBtnAccent:focus,.saveBtnAccent:focus-visible{outline:none;box-shadow:none !important}
-.saveBtnAccent:disabled{opacity:.5}
-
-/* New contrast approach: neutral card + left color stripe */
-.timeEditCardStripe{position:relative;padding-left:16px}
-.timeEditCardStripe::before{content:"";position:absolute;inset:0  auto 0 0;width:6px;border-radius:12px 0 0 12px}
-.stripeBlue::before{background:#3b82f6}
-.stripeGreen::before{background:#10b981}
-.stripePurple::before{background:#8b5cf6}
-.timeEditRow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-.saveRow{margin-top:4px}

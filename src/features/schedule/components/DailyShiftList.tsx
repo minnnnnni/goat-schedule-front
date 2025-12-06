@@ -1,29 +1,35 @@
-
-// 타입 정의
-interface Shift {
-  id: string;
-  type: string;
-  startTime: string;
-  endTime: string;
-  employeeName: string;
-}
+import { useShiftsForDate, ShiftItem } from '@/features/schedule/hooks/useShifts';
 
 interface DailyShiftListPresenterProps {
-  shifts: Shift[];
-  onEdit: (shift: Shift) => void;
+  shifts: ShiftItem[];
+  onEdit: (shift: ShiftItem) => void;
+  isLoading: boolean;
+  error: Error | null;
 }
 
-function DailyShiftListPresenter({ shifts, onEdit }: DailyShiftListPresenterProps) {
-  if (shifts.length === 0) {
+function DailyShiftListPresenter({ shifts, onEdit, isLoading, error }: DailyShiftListPresenterProps) {
+  if (isLoading) {
+    return (
+      <div style={{ padding: 12 }}>
+        {[...Array(3)].map((_, i) => (
+          <div key={i} style={{ background: '#f3f4f6', borderRadius: 12, height: 73, marginBottom: 16, animation: 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite' }} />
+        ))}
+        <style>{`@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }`}</style>
+      </div>
+    );
+  }
+  if (error) {
+    return <div style={{ padding: 24, color: '#ef4444', textAlign: 'center' }}>근무 정보를 불러오는 데 실패했습니다.</div>;
+  }
+  if (!shifts || shifts.length === 0) {
     return <div style={{ padding: 24, color: '#888', textAlign: 'center' }}>등록된 근무가 없습니다</div>;
   }
   return (
     <div style={{ padding: 12 }}>
-      {shifts.map((shift) => {
-        const color =
-          shift.type === '오전' ? '#e3edff'
-          : shift.type === '미들' ? '#d6f5d6'
-          : '#ede3ff';
+      {shifts.map((shift, index) => {
+        // 근무 유형 이름에 의존하지 않고, 순서에 따라 동적으로 색상을 할당합니다.
+        const colors = ['#e3edff', '#d6f5d6', '#ede3ff'];
+        const color = colors[index % colors.length];
         return (
           <div key={shift.id} style={{
             display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fff', borderRadius: 12, boxShadow: '0 1px 4px rgba(0,0,0,0.04)', marginBottom: 16, padding: '16px 20px'
@@ -45,11 +51,13 @@ function DailyShiftListPresenter({ shifts, onEdit }: DailyShiftListPresenterProp
 
 // 프리젠터: props 기반 렌더링
 interface DailyShiftListProps {
-  shifts: Shift[];
-  onEdit: (shift: Shift) => void;
+  selectedDate: Date | null;
+  onEdit: (shift: ShiftItem) => void;
 }
 
-export default function DailyShiftList({ shifts, onEdit }: DailyShiftListProps) {
-  return <DailyShiftListPresenter shifts={shifts} onEdit={onEdit} />;
+export default function DailyShiftList({ selectedDate, onEdit }: DailyShiftListProps) {
+  // useShiftsForDate 훅을 사용하여 선택된 날짜의 근무 데이터를 가져옵니다.
+  // TODO: 로딩 및 에러 상태에 대한 UI 처리 추가 필요
+  const { shifts, isLoading, error } = useShiftsForDate(selectedDate);
+  return <DailyShiftListPresenter shifts={shifts} onEdit={onEdit} isLoading={isLoading} error={error} />;
 }
-

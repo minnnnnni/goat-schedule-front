@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import styles from './BottomNavigation.module.css';
 
 export default function BottomNavigation() {
   const pathname = usePathname();
@@ -42,21 +43,18 @@ export default function BottomNavigation() {
   ];
 
   return (
-    <nav
-      className="flex-shrink-0 sticky bottom-0 z-40 bg-white/95 backdrop-blur border-t border-gray-200 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] bottom-nav min-h-[64px]"
-    >
-      <div className="mx-auto w-full max-w-md flex justify-around items-center min-h-[64px] px-1 py-2">
+    <nav className={styles.bottomNav}>
+      <div className={styles.container}>
         {navItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
             <Link
               key={item.href}
               href={item.href}
-              className="nav-item flex flex-col items-center justify-center flex-1 h-full gap-1 no-underline"
-              style={{ color: isActive ? '#2563eb' : '#9ca3af', textDecoration: 'none' }}
+              className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
             >
-              <item.Icon width={30} height={30} className="shrink-0" />
-              <span className="text-[11px] font-medium leading-none">{item.label}</span>
+              <item.Icon width={32} height={32} className={styles.icon} />
+              <span className={styles.label}>{item.label}</span>
             </Link>
           );
         })}
@@ -64,4 +62,3 @@ export default function BottomNavigation() {
     </nav>
   );
 }
-

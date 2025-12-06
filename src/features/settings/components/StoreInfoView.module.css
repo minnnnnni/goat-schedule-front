@@ -3,7 +3,7 @@
   border: 1px solid #f3f4f6;
   border-radius: 16px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.06);
-  padding: 16px;
+  padding: 8px 16px 16px; /* 상단 여백만 줄임 */
   margin-bottom: 16px;
 }
 
@@ -11,13 +11,15 @@
   margin-bottom: 16px;
 }
 .fieldLabel {
-  font-size: 12px;
-  color: #6b7280;
-  margin-bottom: 4px;
+  font-size: 16px;
+  color: #4A5565;
+  margin-top: 10px;
+  margin-bottom: 0px; /* 값과의 간격 최소화 */
 }
 .fieldValue {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 600;
+  margin-top: 0px;
   color: #111827;
 }
 .days {
@@ -32,7 +34,7 @@
   font-weight: 700;
 }
 .dayActive {
-  background: #2563eb;
+  background: #64648A;
   color: #fff;
 }
 .dayInactive {
@@ -48,34 +50,24 @@
 }
 .timeCard {
   border-radius: 12px;
-  padding: 12px;
+  padding: 8px;
   border: 1px solid transparent;
 }
 .timeBlue { background: #eef2ff; border: 1.5px solid #bfdbfe; }
 .timeGreen { background: #ecfdf5; border: 1.5px solid #a7f3d0; }
 .timePurple { background: #f5f3ff; border: 1.5px solid #ddd6fe; }
 .timeTitle {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 800;
   color: #111827;
 }
 .timeSub {
-  font-size: 13px;
+  font-size: 18px;
   color: #374151;
   margin-top: 2px;
 }
 .timeRange {
-  font-size: 13px;
+  font-size: 18px;
   color: #374151;
   margin-top: 2px;
-}
-.employeeList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.employeeItem {
-  font-size: 13px;
-  color: #374151;
-  margin-bottom: 2px;
 }
