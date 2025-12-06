@@ -1,0 +1,140 @@
+/* 폼 컨테이너 */
+.formContainer {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background-color: #fff;
+  padding-bottom: 100px; 
+}
+
+/* 입력 그룹 */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0a0a0a;
+}
+
+.input {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  border-radius: 8px;
+  background-color: #f3f3f5;
+  border: 1px solid transparent;
+  font-size: 16px;
+  color: #101828;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+
+.input:focus {
+  background-color: #fff;
+  box-shadow: 0 0 0 2px rgba(100, 100, 138, 0.2);
+}
+
+/* 요일 선택 */
+.daySelector {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.dayButton {
+  flex: 1;
+  height: 44px;
+  border-radius: 10px;
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  color: #4a5565;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.dayButton.active {
+  background-color: #64648a;
+  border-color: #64648a;
+  color: #fff;
+}
+
+/* 타임 선택 */
+.timeSelectionGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.timeButton {
+  flex: 1;
+  border-radius: 12px;
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  padding: 16px 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+}
+
+.timeButton.active {
+  border-color: #64648a;
+  background-color: #f0f0ff;
+}
+
+.timeName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #101828;
+}
+
+.timeRange {
+  font-size: 12px;
+  color: #6a7282;
+}
+
+/* 하단 버튼 */
+.submitButtonWrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px 24px;
+  background-color: #fff;
+  border-top: 1px solid #e5e7eb;
+  z-index: 50;
+  box-sizing: border-box;
+}
+
+.submitButton {
+  width: 100%;
+  height: 48px;
+  background-color: #f3793a;
+  border-radius: 8px;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.submitButton:hover {
+  opacity: 0.9;
+}
+
+.submitButton:active {
+  transform: scale(0.98);
+}

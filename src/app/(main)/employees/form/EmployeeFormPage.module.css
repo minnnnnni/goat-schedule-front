@@ -1,0 +1,40 @@
+/* 페이지 전체 레이아웃 */
+.container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #fff;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #101828;
+  position: relative;
+}
+
+/* 상단 헤더 (뒤로가기 버튼 + 제목) */
+.header {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #101828;
+}
+
+.headerTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin-left: 8px;
+  color: #101828;
+}
