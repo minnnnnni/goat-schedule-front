@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from "next/image";
 import styles from './LoginPage.module.css';
-// 백엔드 개발자분이 주신 훅 import
+import KakaoLoginButton from '@/features/auth/components/KakaoLoginButton';
 import useKakaoSdk from "@/features/auth/hooks/useKakaoSdk"; 
 
 export default function LoginPage() {
@@ -62,25 +62,11 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* 버튼 섹션 */}
+       {/* 버튼 섹션 */}
         <div className={styles.buttonWrapper}>
-          {/* 작성자님의 버튼 스타일 유지하되 onClick만 교체 */}
-          <button 
-            type="button"
-            className="w-full bg-[#FEE500] hover:bg-[#FDD835] text-[#191919] font-medium text-[0.95rem] py-4 rounded-xl shadow-sm flex items-center justify-center transition-transform active:scale-95"
+          <KakaoLoginButton 
             onClick={handleLogin}
-          >
-            {/* 아이콘이나 텍스트 등 기존 내용 유지 */}
-             <Image 
-               src="/icons/kakao_symbol.svg" // 카카오 심볼 아이콘이 있다면 사용, 없으면 텍스트만
-               width={20} 
-               height={20} 
-               alt="Kakao"
-               className="mr-2"
-               style={{ display: 'inline-block' }} // 아이콘이 있다면
-             />
-            카카오 로그인
-          </button>
+          />
         </div>
 
       </div>

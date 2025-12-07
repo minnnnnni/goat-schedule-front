@@ -1,20 +1,29 @@
 import { useEffect, useState } from "react";
 
+// window 객체 타입 확장
+declare global {
+  interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Kakao: any;
+  }
+}
+
 export default function useKakaoSdk(): boolean {
   const [ready, setReady] = useState<boolean>(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const K = (window as any).Kakao;
     const scriptSrc = "https://developers.kakao.com/sdk/js/kakao.js";
 
     function initOnce() {
       try {
-        const key = "7a4fc8ba2d42d36c1b7bd272a8e5629a";
-        //const key = (process.env.NEXT_PUBLIC_KAKAO_JS_KEY as string) || "";
-        if (key && (window as any).Kakao && !(window as any).Kakao.isInitialized()) {
-          (window as any).Kakao.init(key);
+        // [중요] 실제로는 환경변수 process.env.NEXT_PUBLIC_KAKAO_JS_KEY를 사용하는 것이 좋습니다.
+        // 백엔드 분과 동일한 키를 사용해야 하므로, 일단 공유해주신 키를 사용하거나 환경변수로 설정하세요.
+        const key = "7a4fc8ba2d42d36c1b7bd272a8e5629a"; 
+        
+        if (key && window.Kakao && !window.Kakao.isInitialized()) {
+          window.Kakao.init(key);
         }
         setReady(true);
       } catch (e) {
@@ -23,16 +32,18 @@ export default function useKakaoSdk(): boolean {
     }
 
     // 이미 초기화 되어있으면 바로 ready
-    if (K && K.isInitialized && K.isInitialized()) {
-      setReady(true);
+    if (window.Kakao && window.Kakao.isInitialized && window.Kakao.isInitialized()) {
+      // [수정] setTimeout으로 감싸서 비동기 처리 -> 에러 해결
+      setTimeout(() => setReady(true), 0);
       return;
     }
 
     // 이미 script가 추가되어 있으면 로드 이벤트 대기
     const existing = document.querySelector(`script[src="${scriptSrc}"]`) as HTMLScriptElement | null;
     if (existing) {
-      if ((window as any).Kakao && (window as any).Kakao.isInitialized && (window as any).Kakao.isInitialized()) {
-        setReady(true);
+      if (window.Kakao && window.Kakao.isInitialized && window.Kakao.isInitialized()) {
+         // [수정] setTimeout으로 감싸서 비동기 처리
+        setTimeout(() => setReady(true), 0);
       } else {
         existing.addEventListener("load", initOnce);
       }
@@ -43,7 +54,7 @@ export default function useKakaoSdk(): boolean {
     const script = document.createElement("script");
     script.src = scriptSrc;
     script.async = true;
-    script.onload = initOnce;
+    script.onload = () => initOnce();
     document.head.appendChild(script);
 
     return () => {

@@ -85,12 +85,14 @@ export async function refreshAccessToken(): Promise<boolean> {
  * - 기본적으로 local에 저장된 access token을 Authorization 헤더에 넣음
  * - 401 응답(토큰 만료) 시 refresh 시도 후 한 번 재시도
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function authorizedRequest<T = any>(
 	endpoint: string,
 	{
 		method = 'GET',
 		body,
 		config,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
 	}: { method?: RequestMethod; body?: any; config?: AxiosRequestConfig } = {}
 ): Promise<AxiosResponse<T>> {
 	const url = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
@@ -114,6 +116,7 @@ export async function authorizedRequest<T = any>(
 	try {
 		const response = await makeRequest();
 		return response;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (err: any) {
 		// 401 처리: 토큰 만료 등
 		const status = err?.response?.status;
@@ -144,5 +147,6 @@ export async function authorizedRequest<T = any>(
 	}
 }
 
-export default {};
-
+// [수정] 객체를 변수에 할당한 후 export default로 내보내기
+const authApi = { authorizedRequest, refreshAccessToken };
+export default authApi;
