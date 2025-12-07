@@ -3,150 +3,148 @@ import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
-// 토큰 키를 일관되게 처리하기 위한 헬퍼
+// 토큰 가져오기 헬퍼 함수
 function getAccessToken(): string | null {
-	if (typeof window === 'undefined') return null;
-	return (
-		localStorage.getItem('accessToken') ||
-		localStorage.getItem('access_token') ||
-		JSON.parse(localStorage.getItem('authTokens') || 'null')?.accessToken ||
-		null
-	);
+  if (typeof window === 'undefined') return null;
+  return (
+    localStorage.getItem('accessToken') ||
+    localStorage.getItem('access_token') ||
+    JSON.parse(localStorage.getItem('authTokens') || 'null')?.accessToken ||
+    null
+  );
 }
 
 function getRefreshToken(): string | null {
-	if (typeof window === 'undefined') return null;
-	return (
-		localStorage.getItem('refreshToken') ||
-		localStorage.getItem('refresh_token') ||
-		JSON.parse(localStorage.getItem('authTokens') || 'null')?.refreshToken ||
-		null
-	);
+  if (typeof window === 'undefined') return null;
+  return (
+    localStorage.getItem('refreshToken') ||
+    localStorage.getItem('refresh_token') ||
+    JSON.parse(localStorage.getItem('authTokens') || 'null')?.refreshToken ||
+    null
+  );
 }
 
 function saveTokens(accessToken: string, refreshToken?: string) {
-	if (typeof window === 'undefined') return;
-	try {
-		// 저장 형식은 기존 코드에 맞춰 둘 다 넣음
-		localStorage.setItem('accessToken', accessToken);
-		localStorage.setItem('access_token', accessToken);
-		const existing = JSON.parse(localStorage.getItem('authTokens') || 'null') || {};
-		existing.accessToken = accessToken;
-		if (refreshToken) {
-			localStorage.setItem('refreshToken', refreshToken);
-			localStorage.setItem('refresh_token', refreshToken);
-			existing.refreshToken = refreshToken;
-		}
-		localStorage.setItem('authTokens', JSON.stringify(existing));
-	} catch (e) {
-		console.error('[authApi] saveTokens error', e);
-	}
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('access_token', accessToken);
+    
+    if (refreshToken) {
+      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('refresh_token', refreshToken);
+    }
+  } catch (e) {
+    console.error('[authApi] saveTokens error', e);
+  }
 }
 
-function clearTokens() {
-	if (typeof window === 'undefined') return;
-	try {
-		localStorage.removeItem('accessToken');
-		localStorage.removeItem('access_token');
-		localStorage.removeItem('refreshToken');
-		localStorage.removeItem('refresh_token');
-		localStorage.removeItem('authTokens');
-	} catch (e) {
-		/* ignore */
-	}
+// [수정 1] 로그아웃 시 모든 키 확실하게 삭제
+function logout() {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('authTokens');
+  } catch (e) {
+    /* ignore */
+  }
 }
 
 /**
  * refreshAccessToken
- * 백엔드에 refresh token을 전달해 access token을 재발급 받습니다.
- * 반환값: 성공 여부
+ * [수정 2] 백엔드 명세에 맞춰 엔드포인트 변경 (/auth/refresh -> /auth/refresh-token)
  */
 export async function refreshAccessToken(): Promise<boolean> {
-	const refreshToken = getRefreshToken();
-	if (!refreshToken) return false;
+  const refreshToken = getRefreshToken();
+  if (!refreshToken) return false;
 
-	try {
-		const resp = await apiClient.post('/auth/refresh', { refreshToken });
-		const data = resp.data;
-		if (data?.accessToken) {
-			saveTokens(data.accessToken, data.refreshToken || refreshToken);
-			return true;
-		}
-		return false;
-	} catch (e) {
-		console.error('[authApi] refreshAccessToken failed', e);
-		clearTokens();
-		return false;
-	}
+  try {
+    // API 주소 변경됨
+    const resp = await apiClient.post('/auth/refresh-token', { refreshToken });
+    const data = resp.data;
+    
+    // 응답 구조에 따라 data.accessToken 또는 data.response.accessToken 일 수 있음 (확인 필요)
+    const newAccessToken = data.accessToken || data.access_token;
+    
+    if (newAccessToken) {
+      saveTokens(newAccessToken, data.refreshToken || data.refresh_token || refreshToken);
+      return true;
+    }
+    return false;
+  } catch (e) {
+    console.error('[authApi] refreshAccessToken failed', e);
+    logout(); // 갱신 실패 시 로그아웃
+    return false;
+  }
+}
+
+/*
+ * 앱 켰을 때 토큰 유효성 확인"용 함수
+ */
+export async function verifyToken(): Promise<boolean> {
+  const token = getAccessToken();
+  if (!token) return false;
+
+  try {
+    // 백엔드 명세: /api/auth/access-token
+    await apiClient.post('/auth/access-token'); 
+    return true; // 에러 안 나면 유효한 토큰
+  } catch (e) {
+    return false; // 에러 나면 만료되거나 위조된 토큰
+  }
 }
 
 /**
  * authorizedRequest
- * - 기본적으로 local에 저장된 access token을 Authorization 헤더에 넣음
- * - 401 응답(토큰 만료) 시 refresh 시도 후 한 번 재시도
+ * (기존 로직 유지: 요청 실패 시 자동 갱신 및 재시도)
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function authorizedRequest<T = any>(
-	endpoint: string,
-	{
-		method = 'GET',
-		body,
-		config,
+  endpoint: string,
+  {
+    method = 'GET',
+    body,
+    config,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-	}: { method?: RequestMethod; body?: any; config?: AxiosRequestConfig } = {}
+  }: { method?: RequestMethod; body?: any; config?: AxiosRequestConfig } = {}
 ): Promise<AxiosResponse<T>> {
-	const url = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
 
-	// 요청 실행 함수
-	const makeRequest = () => {
-		const accessToken = getAccessToken();
-		const headers = {
-			'Content-Type': 'application/json',
-			...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-			...(config?.headers || {}),
-		};
+  const makeRequest = () => {
+    const accessToken = getAccessToken();
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      ...(config?.headers || {}),
+    };
 
-		if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
-			return apiClient.request<T>({ url, method, data: body, headers, ...config });
-		}
+    if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
+      return apiClient.request<T>({ url, method, data: body, headers, ...config });
+    }
+    return apiClient.request<T>({ url, method, params: body, headers, ...config });
+  };
 
-		return apiClient.request<T>({ url, method, params: body, headers, ...config });
-	};
-
-	try {
-		const response = await makeRequest();
-		return response;
+  try {
+    return await makeRequest();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-	} catch (err: any) {
-		// 401 처리: 토큰 만료 등
-		const status = err?.response?.status;
-		const body = err?.response?.data;
-
-		if (status === 401) {
-			// 서버에서 error code를 제공하면 검사 가능 (예: 'tokenExpired')
-			const errorCode = typeof body === 'object' ? (body.error || body.code) : null;
-			const isTokenExpired =
-				!errorCode || // 서버가 코드를 주지 않으면 401은 대개 만료/인증 문제
-				/token/i.test(String(errorCode));
-
-			if (isTokenExpired) {
-				const refreshed = await refreshAccessToken();
-				if (refreshed) {
-					// 토큰 재발급 성공 시 원래 요청 재시도
-					return makeRequest();
-				}
-				// refresh 실패 -> 로그아웃 처리
-				clearTokens();
-				if (typeof window !== 'undefined') window.location.href = '/login';
-				throw err;
-			}
-		}
-
-		// 이외의 에러는 상위로 전달
-		throw err;
-	}
+  } catch (err: any) {
+    const status = err?.response?.status;
+    // 401 에러 발생 시 토큰 갱신 시도
+    if (status === 401) {
+      const refreshed = await refreshAccessToken();
+      if (refreshed) {
+        return makeRequest(); // 갱신 성공 시 재요청
+      }
+      logout(); // 갱신 실패 시 로그아웃
+      if (typeof window !== 'undefined') window.location.href = '/login';
+      throw err;
+    }
+    throw err;
+  }
 }
 
-// [수정] 객체를 변수에 할당한 후 export default로 내보내기
-const authApi = { authorizedRequest, refreshAccessToken };
+const authApi = { authorizedRequest, refreshAccessToken, logout, verifyToken };
 export default authApi;
