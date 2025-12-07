@@ -1,56 +1,62 @@
-.bottomNav {
-  flex-shrink: 0;
-  position: sticky;
-  bottom: 0;
-  z-index: 40;
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  border-top: 1px solid #e5e7eb; /* border-gray-200 */
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
-  min-height: 72px; /* 높이 증가 */
-}
-
+/* 네비게이션 컨테이너 (피그마 .div 스타일 반영) */
 .container {
-  margin-left: auto;
-  margin-right: auto;
   width: 100%;
-  max-width: 28rem; /* 448px */
+  height: 97px; /* 피그마 높이 */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: #fff;
+  
+  /* 상단 둥근 모서리 + 그림자 */
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05); /* 자연스러운 상단 그림자로 수정 */
+  
+  /* Grid 레이아웃 대신 Flexbox 사용 (반응형 대응) */
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  min-height: 72px; /* 높이 증가 */
-  padding: 10px 4px; /* 세로 패딩 증가 */
+  justify-content: space-around; /* 버튼 간격 균등 배치 */
+  align-items: flex-start; /* 상단 정렬 */
+  padding-top: 11px; /* 아이콘 위치 조정 */
+  padding-bottom: 20px; /* 하단 여백 */
+  box-sizing: border-box;
+  z-index: 50;
 }
 
+/* 개별 네비게이션 버튼 (피그마 .button, .button2 등 공통 스타일) */
 .navItem {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex: 1;
-  height: 100%;
-  gap: 5px; /* 아이콘과 텍스트 간격 증가 */
-  text-decoration: none;
-  color: #9ca3af; /* 기본 색상 (gray-400) */
-  transition: color 0.15s ease-in-out;
+  gap: 4px;
+  flex: 1; /* 고정 너비 대신 flex-grow를 사용하여 반응형으로 만듭니다. */
+  height: 64px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none; /* 링크 밑줄 제거 */
+  transition: all 0.2s ease-in-out;
 }
 
-.navItem:hover {
-  color: #4b5563; /* hover 색상 (gray-600) */
-}
-
-.navItemActive {
-  color: #f97316; /* 활성 색상 (orange-500) */
-  font-weight: 600;
-}
-
-.icon {
-  flex-shrink: 0;
-}
-
+/* 텍스트 스타일 (피그마 .div2, .text 등) */
 .label {
-  font-size: 12px; /* 폰트 크기 증가 */
-  font-weight: 500;
-  line-height: 1;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: -0.02em;
+  color: #6a7282; /* 기본 색상 */
+}
+
+/* 활성 상태 텍스트 색상 (피그마 .button -> color: #f3793a) */
+.active .label {
+  color: #f3793a;
+  font-weight: 500; /* 활성 시 폰트 굵기 조정 (선택 사항) */
+}
+
+/* 아이콘 크기 (피그마 .icon) */
+.icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }

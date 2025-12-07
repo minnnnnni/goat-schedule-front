@@ -54,18 +54,19 @@ export default function Header({ hasBack }: { hasBack?: boolean }) {
 
   return (
     <header className={`${styles.header} sticky top-0 z-30`}>
-      <div className="mx-auto flex h-full max-w-md items-center justify-between px-4">
-        {hasBack ? (
-          <button onClick={() => router.back()} className="p-2 -ml-2">
-            <BackIcon />
-          </button>
-        ) : (
-          <span className={styles.spacer} aria-hidden="true" />
-        )}
-        <div className={styles.titleRow}>
-          <h1 className={styles.title}>{pageTitle}</h1>
+      <div className="mx-auto flex h-full max-w-md items-center px-4">
+        <div className="flex flex-1 items-center">
+          {hasBack ? (
+            <button onClick={() => router.back()} className="p-2 -ml-2">
+              <BackIcon />
+            </button>
+          ) : (
+            <span className={styles.spacer} aria-hidden="true" />
+          )}
+          <div className={styles.titleRow}>
+            <h1 className={styles.title}>{pageTitle}</h1>
+          </div>
         </div>
-        <span className={styles.spacer} aria-hidden="true" />
       </div>
     </header>
   );

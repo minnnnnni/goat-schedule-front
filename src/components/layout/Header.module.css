@@ -24,11 +24,11 @@
 }
 
 .spacer {
-  width: 28px; /* keep left spacing consistent where icon was */
-  height: 28px;
+  width: 16px; /* keep left spacing consistent where icon was */
+  height: 16px;
 }
 
 .title {
-  font-size: 30px; /* 폰트 크기 증가 (32px) */
+  font-size: 26px; /* 폰트 크기 증가 (32px) */
   font-weight: 550;
 }

@@ -6,11 +6,11 @@
   border-radius: 16px;
   padding: 10px 14px; /* reduced to align with card density */
   line-height: 1;
-  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
+  box-shadow: 0 8px 18px rgba(249, 115, 22, 0.22);
   transition: background 0.18s ease, border-color 0.18s ease, transform 0.06s ease, box-shadow 0.18s ease;
-  width: 100%;
-  max-width: none; /* allow full screen width */
-  margin: auto; /* remove centering margins */
+  width: 100%; /* Use full width on smaller screens */
+  max-width: 400; /* Match the max-width of the schedule card container */
+  margin: 0 auto; /* Center the button */
 }
 
 /* home layout wrapper to constrain width similar to schedule card container */
@@ -27,12 +27,12 @@
 .generateButton:hover {
   background: #f97316; /* blue-800 */
   border-color: #f97416; /* blue-700 */
-  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.28);
+  box-shadow: 0 10px 22px rgba(249, 115, 22, 0.28);
 }
 
 .generateButton:active {
   transform: translateY(0.5px);
-  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.22);
+  box-shadow: 0 6px 14px rgba(249, 115, 22, 0.22);
 }
 
 .sparkle {
@@ -54,4 +54,48 @@
 .buttonIcon {
   width: 14px; /* w-3.5 */
   height: 14px; /* h-3.5 */
+}
+
+/* --- 헤더 스타일 시작 --- */
+
+/* 전체 컨테이너 */
+.container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f8f9fa; /* 배경색 */
+  font-family: 'Noto Sans KR', sans-serif;
+  position: relative;
+}
+
+/* 상단 헤더 영역 */
+.headerSection {
+  background-color: #FDFCEA;
+  padding: 48px 24px 32px;
+  border-bottom-left-radius: 14px;
+  border-bottom: 1px solid #dee2e6; /* 경계선 색상 진하게 변경 */
+  border-bottom-right-radius: 14px;
+  min-height: 100px; /* 높이 조정 */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 은은한 그림자 추가 */
+}
+
+/* 가게 이름 스타일 */
+.storeName {
+  color: #786C63; /* 요청 색상으로 변경 */
+  font-size: 26px; /* 폰트 크기 키움 */
+  font-weight: 500;
+  margin-top: 0px; /* 간격 늘림 */
+  margin-bottom: 0px;
+}
+
+/* 페이지 제목 스타일 */
+.title {
+  color: #9C9087; /* 요청 색상으로 변경 */
+  font-size: 16px; /* 폰트 크기 줄임 */
+  font-weight: 700;
+  margin: 0px;
+  margin-top: 40px; /* 간격 줄임 */
 }

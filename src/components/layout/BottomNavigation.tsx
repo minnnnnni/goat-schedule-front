@@ -1,64 +1,73 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
 import styles from './BottomNavigation.module.css';
 
 export default function BottomNavigation() {
   const pathname = usePathname();
 
-  // 심플한 아웃라인 SVG 아이콘들 (외부 라이브러리 없이 사용)
-  const HomeIcon = ({ className, ...props }: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>
-      <path d="M3 10.5 12 3l9 7.5" />
-      <path d="M5 10v9a1 1 0 0 0 1 1h4v-5h4v5h4a1 1 0 0 0 1-1v-9" />
-    </svg>
-  );
-  const CalendarIcon = ({ className, ...props }: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>
-      <rect x="3" y="5" width="18" height="16" rx="2" />
-      <path d="M16 3v4M8 3v4M3 11h18" />
-    </svg>
-  );
-  const UsersIcon = ({ className, ...props }: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>
-      <path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-    </svg>
-  );
-  const SettingsIcon = ({ className, ...props }: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>
-      <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.07a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.07c.69 0 1.3-.4 1.51-1a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06c.47.47 1.15.61 1.82.33.61-.26 1-.87 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.07c0 .64.39 1.25 1 1.51.67.28 1.35.14 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82c.21.6.82 1 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.07c-.64 0-1.25.39-1.51 1Z" />
-    </svg>
-  );
-
+  // 네비게이션 아이템 설정 (아이콘 경로 포함)
   const navItems = [
-    { href: '/home', label: '홈', Icon: HomeIcon },
-    { href: '/calendar', label: '캘린더', Icon: CalendarIcon },
-    { href: '/employees', label: '알바생관리', Icon: UsersIcon },
-    { href: '/settings', label: '설정', Icon: SettingsIcon },
+    {
+      label: '홈',
+      path: '/home',
+      iconDefault: '/icons/home_icon.svg',
+      iconActive: '/icons/home_icon_orange.svg',
+    },
+    {
+      label: '캘린더',
+      path: '/calendar',
+      iconDefault: '/icons/calendar_icon.svg',
+      iconActive: '/icons/calendar_icon_orange.svg',
+    },
+    {
+      label: '알바생관리',
+      path: '/employees', 
+      iconDefault: '/icons/employees_icon.svg',
+      iconActive: '/icons/employees_icon_orange.svg',
+    },
+    {
+      label: '설정',
+      path: '/settings',
+      iconDefault: '/icons/setting_icon.svg', // 파일명 확인 필요 (setting_icon.svg가 맞는지)
+      iconActive: '/icons/setting_icon_orange.svg',
+    },
   ];
 
+  // 현재 경로가 해당 탭의 경로를 포함하는지 확인 (active 상태 결정)
+  const isActive = (path: string) => {
+    // 홈은 정확히 일치할 때만 active
+    if (path === '/home') {
+      return pathname === path;
+    }
+    // 다른 경로는 하위 경로도 active로 처리
+    return pathname.startsWith(path);
+  };
+
   return (
-    <nav className={styles.bottomNav}>
-      <div className={styles.container}>
-        {navItems.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
-            >
-              <item.Icon width={32} height={32} className={styles.icon} />
-              <span className={styles.label}>{item.label}</span>
-            </Link>
-          );
-        })}
-      </div>
+    <nav className={styles.container}>
+      {navItems.map((item) => {
+        const active = isActive(item.path);
+        
+        return (
+          <Link
+            key={item.path}
+            href={item.path}
+            className={`${styles.navItem} ${active ? styles.active : ''}`.trim()}
+          >
+            <Image 
+              src={active ? item.iconActive : item.iconDefault} 
+              alt={item.label} 
+              width={24} 
+              height={24} 
+              className={styles.icon}
+            />
+            <span className={styles.label}>{item.label}</span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }
