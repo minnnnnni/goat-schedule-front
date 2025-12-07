@@ -1,0 +1,66 @@
+/* 네비게이션 컨테이너 (피그마 .div 스타일 반영) */
+.container {
+  width: 100%;
+  height: 97px; /* 피그마 높이 */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: #fff;
+  
+  /* 상단 둥근 모서리 + 그림자 */
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 10px 0px 15px rgba(0, 0, 0, 0.05);
+  
+  /* Grid 레이아웃 대신 Flexbox 사용 (반응형 대응) */
+  display: flex;
+  justify-content: space-around; /* 버튼 간격 균등 배치 */
+  align-items: flex-start; /* 상단 정렬 */
+  padding-top: 11px; /* 아이콘 위치 조정 */
+  padding-bottom: 20px; /* 하단 여백 */
+  box-sizing: border-box;
+  z-index: 50;
+}
+
+/* 개별 네비게이션 버튼 (피그마 .button, .button2 등 공통 스타일) */
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 103.3px; /* 피그마 너비 반영 */
+  height: 64px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease-in-out;
+}
+
+/* 텍스트 스타일 (피그마 .div2, .text 등) */
+.label {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: -0.02em;
+  color: #6a7282; /* 기본 색상 */
+}
+
+/* 활성 상태 텍스트 색상 (피그마 .button -> color: #f3793a) */
+.active .label {
+  color: #f3793a;
+  font-weight: 500; /* 활성 시 폰트 굵기 조정 (선택 사항) */
+}
+
+/* 비활성 상태 텍스트 색상 */
+.inactive .label {
+  color: #6a7282;
+}
+
+/* 아이콘 크기 (피그마 .icon) */
+.icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}

@@ -1,0 +1,327 @@
+/* 전체 페이지 배경 */
+.pageBackground {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #fdfcea;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #64648a;
+}
+
+/* 폼 카드 컨테이너 */
+.formCard {
+  width: 100%;
+  max-width: 420px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0px 20px 25px -5px rgba(0, 0, 0, 0.1), 0px 8px 10px -6px rgba(0, 0, 0, 0.1);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-sizing: border-box;
+}
+
+/* 헤더 영역 */
+.header {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #64648a;
+  line-height: 24px;
+}
+
+/* 폼 그룹 공통 */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  /* gap: 8px;  <- 라벨 마진으로 대체하기 위해 제거 */
+  width: 100%;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64648a;
+  line-height: 14px;
+  margin-bottom: 8px; /* [수정] 라벨과 입력창 사이 간격 추가 */
+}
+
+.input {
+  width: 100%;
+  height: 48px;
+  padding: 4px 12px;
+  border-radius: 8px;
+  background-color: #f3f3f5;
+  border: 1px solid transparent;
+  font-size: 16px;
+  color: #717182;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s;
+  min-width: 0; /* [중요] Grid 내에서 input이 튀어나가는 것 방지 */
+}
+
+.input:focus {
+  background-color: #fff;
+  box-shadow: 0 0 0 2px rgba(100, 100, 138, 0.2);
+}
+
+/* 요일 선택 섹션 */
+.daySelectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.quickSelectGroup {
+  display: flex;
+  gap: 12px;
+}
+
+.quickSelectButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #64648a;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.checkBox {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background-color: #f3f3f5;
+  border: 0.7px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.checkBox.active {
+  background-color: #64648a;
+  border-color: #64648a;
+}
+
+.dayButtonContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  height: 48px;
+  align-items: center;
+}
+
+.dayButton {
+  flex: 1;
+  height: 36px;
+  border-radius: 10px;
+  background-color: #fff;
+  border: 1.5px solid #e5e7eb;
+  color: #4a5565;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.dayButton.active {
+  background-color: #64648a;
+  border-color: #64648a;
+  color: #fff;
+}
+
+/* 시간 입력 그리드 */
+.timeGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px; /* [중요] 간격을 16px -> 10px로 줄여 공간 확보 */
+  width: 100%;
+}
+
+/* 예외 근무 체크박스 */
+.exceptionCheck {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #364153;
+}
+
+/* 예외 설정 카드 */
+.exceptionCard {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 16px;
+  background-color: #f9fafb;
+  margin-top: 12px;
+}
+
+.exceptionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.exceptionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #343A40;
+}
+
+/* 타임 설정 섹션 */
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 32px;
+  margin-bottom: 12px;
+}
+
+.addTimeButton {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background-color: #fff;
+  border: 0.7px solid #d1d5dc;
+  color: #364153;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.addExceptionButton {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border: 1px dashed #d1d5dc;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #64648a;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background-color 0.2s;
+}
+
+.addExceptionButton:hover {
+  background-color: #f8f9fa;
+}
+
+/* 타임 카드 스타일 */
+.timeCard {
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+  position: relative;
+  border-width: 1.5px;
+  border-style: solid;
+}
+
+.timeCard.green { 
+  background-color: rgba(186, 214, 133, 0.2); 
+  border-color: #bad685; 
+}
+
+.timeCard.blue { 
+  background-color: rgba(151, 183, 239, 0.2); 
+  border-color: #97b7ef; 
+}
+
+.timeCard.pink { 
+  background-color: rgba(252, 228, 236, 0.4); 
+  border-color: #F8BBD0; 
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.cardLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: #101828;
+}
+
+.cardInput {
+  background-color: #fff !important;
+  height: 40px !important;
+  font-size: 15px;
+}
+
+.smallLabel {
+  display: block;
+  font-size: 12px;
+  color: #64648a;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+/* 완료 버튼 */
+.submitButton {
+  width: 100%;
+  height: 48px;
+  border-radius: 8px;
+  background-color: #f3793a;
+  color: white;
+  font-weight: 500;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: opacity 0.2s;
+  box-shadow: 0 4px 6px rgba(243, 121, 58, 0.2);
+}
+
+.submitButton:hover {
+  opacity: 0.9;
+}
+
+.submitButton:active {
+  transform: scale(0.98);
+}
+
+.deleteButton {
+  width: 24px;
+  height: 24px;
+  background-color: #ffffff;
+  border-radius: 6px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #FA5252; /* 빨간색 */
+  padding: 0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05); /* 살짝 입체감 */
+}

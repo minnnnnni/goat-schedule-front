@@ -1,92 +1,89 @@
 "use client";
 
-import React, { useState } from "react";
-import useKakaoSdk from "@/features/auth/hooks/useKakaoSdk";
+import React from 'react';
+import Image from "next/image";
+import styles from './LoginPage.module.css';
+// 백엔드 개발자분이 주신 훅 import
+import useKakaoSdk from "@/features/auth/hooks/useKakaoSdk"; 
 
-export default function Page() {
-  const [contents, setContents] = useState<string>("");
-  const [message, setMessage] = useState<string | null>(null);
-
-  // Kakao SDK 로드/초기화 훅
+export default function LoginPage() {
+  // 1. SDK 로드 상태 확인
   const kakaoReady = useKakaoSdk();
 
-  type Tokens = {
-    accessToken: string;
-    refreshToken: string;
-  };
-
-  // 로컬(사용자 기기)에 토큰을 저장하는 헬퍼
-  function saveTokens(tokens: Tokens) {
-    try {
-      // 간단한 저장: 필요하면 더 안전한 저장소(쿠키, httpOnly 쿠키 등)로 변경하세요.
-      localStorage.setItem("authTokens", JSON.stringify(tokens));
-      // 편의상 개별 토큰도 함께 저장 (선택사항)
-      localStorage.setItem("accessToken", tokens.accessToken);
-      localStorage.setItem("refreshToken", tokens.refreshToken);
-    } catch (e) {
-      console.error("Failed to save tokens to localStorage", e);
-    }
-  }
-
-  // URL 파라미터 메시지는 클라이언트에서 간단히 읽도록 유지합니다.
-  if (typeof window !== "undefined") {
-    try {
-      const urlParams = new URLSearchParams(window.location.search);
-
-      // 백엔드가 리다이렉트 시 쿼리 파라미터로 토큰을 전달하는 경우 처리
-      const accessToken = urlParams.get("accessToken") || urlParams.get("access_token");
-      const refreshToken = urlParams.get("refreshToken") || urlParams.get("refresh_token");
-
-      if (accessToken && refreshToken) {
-        saveTokens({ accessToken, refreshToken });
-        // URL에 민감한 정보가 남아있지 않도록 정리
-        const cleanUrl = window.location.origin + window.location.pathname;
-        window.history.replaceState({}, document.title, cleanUrl);
-        setMessage("로그인 성공");
-      } else {
-        if (urlParams.get("login") === "success") setMessage("로그인 성공");
-      }
-    } catch (e) {
-      /* ignore */
-    }
-  }
-
-  function kakaoLogin() {
+  // 2. 로그인 함수 (백엔드 로직 적용)
+  const handleLogin = () => {
+    // 윈도우 객체 확인
     if (typeof window === "undefined") return;
+    
+    // SDK 로드 대기
     if (!kakaoReady) {
-      // SDK가 아직 로드되지 않았을 때 사용자 안내
-      alert("카카오 SDK를 아직 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+      alert("카카오 로그인을 준비 중입니다. 잠시만 기다려주세요.");
       return;
     }
+
+    // Kakao 객체 확인
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (!(window as any).Kakao) {
       console.error("Kakao SDK가 로드되었지만 window.Kakao가 없습니다.");
       return;
     }
+
     try {
-      const domain = window.location.origin;
-      // ! 로컬로 테스트시
-      // (window as any).Kakao.Auth.authorize({ redirectUri: `http://localhost:8080/api/auth/kakao` });
-      // ! 실제 서버 배포용
-      (window as any).Kakao.Auth.authorize({ redirectUri: `http://3.39.193.214:8080/api/auth/kakao` });
+      // [핵심] 백엔드 서버의 인증 주소로 리다이렉트
+      // 로컬 테스트용인지 실제 배포용인지 확인 필요. 백엔드 개발자분 코드에 있던 주소 사용.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).Kakao.Auth.authorize({ 
+        redirectUri: `http://3.39.193.214:8080/api/auth/kakao` 
+      });
     } catch (e) {
       console.error("kakaoLogin error", e);
     }
-  }
+  };
 
-  // ==============
-  // ===== UI =====
-  // ==============
   return (
-    <div style={{ padding: 20 }}>
-      <h1>카카오 로그인 및 API 예제</h1>
-
-      <div style={{ marginTop: 12 }}>
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }} className="login-buttons">
-            <img src="//k.kakaocdn.net/14/dn/btqCn0WEmI3/nijroPfbpCa4at5EIsjyf0/o.jpg" alt="카카오 로그인" onClick={kakaoLogin}/>
-          
+    <div className={styles.container}>
+      <div className={styles.contentWrapper}>
+        
+        {/* 로고 섹션 (작성자님 디자인) */}
+        <div className={styles.logoSection}>
+          <div className={styles.iconWrapper}>
+             <Image 
+               className={styles.icon} 
+               src="/icons/calendar-icon.svg" 
+               width={64} 
+               height={64} 
+               alt="App Logo" 
+               priority
+             />
+          </div>
+          <div className={styles.textGroup}>
+            <h1 className={styles.heading}>자동근무표 앱</h1>
+            <p className={styles.paragraph}>사장님을 위한 스마트한 근무표 관리</p>
+          </div>
         </div>
+
+        {/* 버튼 섹션 */}
+        <div className={styles.buttonWrapper}>
+          {/* 작성자님의 버튼 스타일 유지하되 onClick만 교체 */}
+          <button 
+            type="button"
+            className="w-full bg-[#FEE500] hover:bg-[#FDD835] text-[#191919] font-medium text-[0.95rem] py-4 rounded-xl shadow-sm flex items-center justify-center transition-transform active:scale-95"
+            onClick={handleLogin}
+          >
+            {/* 아이콘이나 텍스트 등 기존 내용 유지 */}
+             <Image 
+               src="/icons/kakao_symbol.svg" // 카카오 심볼 아이콘이 있다면 사용, 없으면 텍스트만
+               width={20} 
+               height={20} 
+               alt="Kakao"
+               className="mr-2"
+               style={{ display: 'inline-block' }} // 아이콘이 있다면
+             />
+            카카오 로그인
+          </button>
+        </div>
+
       </div>
     </div>
   );
 }
-

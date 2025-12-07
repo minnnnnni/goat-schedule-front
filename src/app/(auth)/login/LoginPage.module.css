@@ -1,0 +1,70 @@
+.container {
+  width: 100%;
+  height: 100vh; /* 화면 전체 높이 */
+  position: relative;
+  background-color: #fdfcea; 
+  overflow: hidden;
+  display: flex; /* Flexbox 사용 */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 중앙 컨텐츠 래퍼 */
+.contentWrapper {
+  width: 100%;
+  max-width: 400px; /* 모바일 너비 제한 */
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+}
+
+/* 로고 및 텍스트 그룹 */
+.logoSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px; 
+  text-align: center;
+}
+
+
+.iconWrapper {
+  margin-bottom: 0.5rem;
+}
+
+.icon {
+  border-radius: 16px; 
+  object-fit: contain;
+}
+
+.textGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.heading {
+  margin: 0;
+  font-size: 24px; 
+  font-weight: 700;
+  color: #64648a; 
+  line-height: 1.2;
+}
+
+.paragraph {
+  margin: 0;
+  font-size: 14px; 
+  color: #d1d1e9; 
+  font-weight: 500;
+}
+
+/* 버튼 래퍼 */
+.buttonWrapper {
+  width: 100%;
+  max-width: 320px; 
+}
