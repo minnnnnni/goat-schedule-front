@@ -42,7 +42,7 @@ export default function HomePage() {
     <div className={styles.container}>
       <header className={styles.headerSection}>
         {/* 가게 이름 표시 */}
-        <p className={styles.title}>안녕하세요 사장님</p>
+        <p className={styles.title}>안녕하세요,사장님!</p>
         <p className={styles.storeName}>{storeName}</p>
       </header>
 

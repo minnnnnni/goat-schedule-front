@@ -94,8 +94,9 @@
 /* 페이지 제목 스타일 */
 .title {
   color: #9C9087; /* 요청 색상으로 변경 */
-  font-size: 16px; /* 폰트 크기 줄임 */
+  font-size: 14px; /* 폰트 크기 줄임 */
   font-weight: 700;
   margin: 0px;
   margin-top: 40px; /* 간격 줄임 */
 }
+

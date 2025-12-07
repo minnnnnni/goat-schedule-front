@@ -135,14 +135,12 @@ export default function GenerateSchedulePopup({ onClose, onGenerate }: { onClose
               <hr className={styles.divider} />
 
               {/* 변경사항 체크박스 */}
-              {/* TODO: 백엔드 구현 후 disabled 속성 제거 */}
-              <label className={`${styles.checkboxRow} ${styles.disabledFeature}`}>
+              <label className={styles.checkboxRow}>
                 <input 
                   type="checkbox" 
                   className={styles.checkbox}
                   checked={hasChange} 
                   onChange={(e) => setHasChange(e.target.checked)} 
-                  disabled // 기능 비활성화
                 />
                 <span className={styles.checkboxLabel}>변경사항이 있습니까?</span>
               </label>

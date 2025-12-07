@@ -1,12 +1,15 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 16px;
+  gap: 16px;  
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 16px 12px;
 }
 
 .titleWrap {
-  height: 4px;
+  display: none;
 }
 
 .sectionHeader {
@@ -16,20 +19,13 @@
   margin-bottom: 8px;
 }
 
-.editBtn {
-  padding: 6px 12px;
-  border-radius: 8px;
-  background: #f3f4f6; /* gray-100 */
-  color: #111827;
-  font-size: 14px;
-}
-
 .innerPanel {
   background: #ffffff;
   border: 1px solid #e5e7eb; /* gray-200 */
   border-radius: 12px;
   padding: 16px;
-}
+} 
+/* innerPanel과 스타일이 겹치므로, 더 구체적인 스타일로 병합/수정 */
 
 .field {
   display: flex;
@@ -37,11 +33,13 @@
   gap: 6px;
   margin-bottom: 12px;
 }
+.field:last-child { margin-bottom: 0; }
 
 .fieldLabel {
   font-size: 12px;
   color: #6b7280; /* gray-500 */
-}
+  margin-bottom: 4px;
+} 
 
 .fieldValue {
   font-size: 14px;
@@ -53,24 +51,20 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  margin-top: 6px;
 }
 
 .dayChip {
   padding: 4px 10px;
-  border-radius: 9999px;
+  border-radius: 10px;
   font-size: 12px;
-  border: 1px solid #e5e7eb;
+  font-weight: 700;
 }
 
 .dayActive {
-  background: #e0f2fe; /* sky-100 */
-  color: #0369a1; /* sky-700 */
-  border-color: #bae6fd; /* sky-200 */
-}
-
-.dayInactive {
-  background: #f9fafb; /* gray-50 */
-  color: #6b7280;
+  background: #2563eb;
+  color: #fff;
+  border: 1px solid transparent;
 }
 
 .timeList {
@@ -180,65 +174,61 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 12px;
+  padding: 8px 16px; /* 다른 버튼과 여백 통일 */
   border-radius: 8px;
-  background: #f3f4f6;
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  font-weight: 700;
+  font-size: 16px; /* 다른 버튼과 글자 크기 통일 */
+  width: auto; /* 너비를 내용에 맞게 조절 */
 }
-.container{max-width:600px;margin-left:auto;margin-right:auto;padding:16px 12px}
-.titleWrap{display:none}
-.pageTitle{display:none}
-.subtitle{display:none}
-
-.sectionCard{background:#fff;border:1px solid #f3f4f6;border-radius:16px;box-shadow:0 1px 2px rgba(0,0,0,.06);padding:16px}
-.sectionHeader{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-/* Tighter spacing between store icon and text */
-.headerLeft{display:flex;align-items:center;gap:4px;color:#111827;font-weight:700}
-.headerLeft {
-  font-size: 20px; /* 글자 크기 키움 */
+.logoutBtn:hover{
+  background:#fecaca
 }
-/* Removed unused .iconCapsule (was for old store emoji) */
-
-.editBtn{display:inline-flex;align-items:center;padding:6px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;color:#374151;font-size:13px;font-weight:600;line-height:1}
-.editBtn {
-  font-size: 16px; /* 글자 크기 키움 */
-  padding: 8px 16px; /* 버튼 크기 키움 */
-}
-.editBtn:hover{background:#f9fafb}
-/* Simple store icon (no capsule) */
-.storeIcon{width:18px;height:18px;color:#374151}
-.storeIcon { width: 22px; height: 22px; } /* 아이콘 크기도 함께 키움 */
-
-.innerPanel{border:1px solid #e5e7eb;border-radius:16px;padding:14px}
-.field{margin-bottom:16px}
-.fieldLabel{font-size:12px;color:#6b7280;margin-bottom:4px}
-.fieldValue{font-size:14px;font-weight:600;color:#111827}
-
-.days{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.dayChip{padding:6px 10px;border-radius:10px;font-size:12px;font-weight:700}
-.dayActive{background:#2563eb;color:#fff}
-.dayInactive{background:#f3f4f6;color:#9ca3af;border:1px solid #e5e7eb}
-
-/* Edit mode layout (deduplicated definitions) */
-/* NOTE: Earlier duplicate .editForm/.dayToggleWrap/.dayButton removed to avoid conflicting gap values */
-.saveBtnLarge{padding:14px 0;font-size:15px;font-weight:700}
-
-/* Match view-mode time cards spacing in edit mode if future editable fields added */
-.editSectionTitle{font-size:12px;color:#6b7280;font-weight:600;margin-bottom:4px}
-
-
-.timeList{display:flex;flex-direction:column;gap:10px;margin-top:6px}
-.timeCard{border-radius:12px;padding:12px;border:1px solid transparent}
-.timeTitle{font-size:14px;font-weight:800;color:#111827}
-.timeSub{font-size:13px;color:#374151;margin-top:2px}
-.timeRange{font-size:13px;color:#374151;margin-top:2px}
-.timeBlue{background:#eef2ff;border-color:#bfdbfe}
-.timeGreen{background:#ecfdf5;border-color:#a7f3d0}
-.timePurple{background:#f5f3ff;border-color:#ddd6fe}
-
-.logoutBtn{width:100%;display:flex;align-items:center;justify-content:center;gap:4px;padding:8px;border-radius:8px;border:1px solid #fecaca;background:#fee2e2;color:#dc2626;font-weight:700;font-size:24px;line-height:2;overflow:hidden;writing-mode:horizontal-tb}
-.logoutBtn:hover{background:#fecaca}
 
 /* Ensure icon size is constrained even if global svg rules exist */
-.logoutBtn svg{width:16px;height:16px;flex:0 0 16px;display:inline-block}
+.logoutBtn svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  display: inline-block;
+}
 
+.pageTitle { display: none; }
+.subtitle { display: none; }
 
+.sectionCard {
+  background: #fff;
+  border: 1px solid #f3f4f6;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  padding: 16px;
+}
+
+/* Tighter spacing between store icon and text */
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #111827;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.editBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #374151;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+}
+.editBtn:hover { background: #f9fafb; }
+
+/* Simple store icon (no capsule) */
+.storeIcon { width: 22px; height: 22px; color: #374151; }
