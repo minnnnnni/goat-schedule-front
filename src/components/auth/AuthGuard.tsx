@@ -1,33 +1,61 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
+  const [authorized, setAuthorized] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  // localStorage에 있는 토큰을 매 렌더마다 바로 읽어서 상태로 두지 않습니다.
-  const token =
-    typeof window !== "undefined"
-      ? localStorage.getItem("accessToken") || localStorage.getItem("access_token")
-      : null;
+
+  const readToken = () => {
+    if (typeof window === "undefined") return null;
+    return localStorage.getItem("accessToken") || localStorage.getItem("access_token");
+  };
+
+  const hasRecentLogout = () => {
+    if (typeof window === "undefined") return false;
+    return sessionStorage.getItem("recentLogout") === "1";
+  };
 
   // 1. 공용 페이지인지 판단 (렌더링 단계에서 즉시 계산)
   const publicPaths = ["/login", "/login/callback", "/onboarding"];
   const isPublicPath = publicPaths.some((path) => pathname?.startsWith(path));
 
   useEffect(() => {
-    // 공용 페이지에서 로그인 상태로 /login에 접근하면 홈으로 리다이렉트
-    if (isPublicPath && token && pathname === "/login") {
-      router.replace("/home");
-      return;
-    }
+    const handleAuth = () => {
+      const currentToken = readToken();
+      const recentLogout = hasRecentLogout();
 
-    // 비공개 페이지에서 토큰이 없으면 로그인 페이지로 이동
-    if (!isPublicPath && !token) {
-      router.replace("/login");
-    }
-  }, [isPublicPath, pathname, router, token]);
+      if (isPublicPath) {
+        // 로그인 페이지에서 로그인 상태면 홈으로 이동
+        if (currentToken && pathname === "/login" && !recentLogout) {
+          router.replace("/home");
+        }
+        // 최근 로그아웃 플래그가 있으면 한 번만 사용하고 제거
+        if (recentLogout) {
+          sessionStorage.removeItem("recentLogout");
+        }
+        setAuthorized(true);
+        return;
+      }
+
+      // 보호 페이지인데 토큰이 없으면 로그인으로
+      if (!currentToken) {
+        setAuthorized(false);
+        router.replace("/login");
+        return;
+      }
+
+      setAuthorized(true);
+    };
+
+    handleAuth();
+
+    // 다른 탭이나 동시 요청에서 토큰이 변할 때 감지
+    window.addEventListener("storage", handleAuth);
+    return () => window.removeEventListener("storage", handleAuth);
+  }, [isPublicPath, pathname, router]);
 
   // --- 화면 렌더링 로직 ---
 
@@ -38,7 +66,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   }
 
   // 2. 인증 필요한 페이지: 아직 검사 중이면(false) 빈 화면
-  if (!token) {
+  if (!authorized) {
     return null;
   }
 

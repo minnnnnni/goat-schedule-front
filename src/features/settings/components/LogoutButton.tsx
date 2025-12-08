@@ -1,30 +1,40 @@
 "use client";
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
-import authApi from '@/services/authApi'; // authApi 불러오기
+import authApi from '@/services/authApi';
 
 export default function LogoutButton() {
-  const router = useRouter();
+  const handleLogout = async () => {
+    try {
+      // 1. 카카오 SDK가 로드되어 있는지 확인
+      if (window.Kakao && window.Kakao.Auth && window.Kakao.Auth.getAccessToken()) {
+        // 2. 카카오 로그아웃 요청 (카카오 세션 끊기)
+        await new Promise<void>((resolve) => {
+          window.Kakao.Auth.logout(() => {
+            resolve();
+          });
+        });
+      }
+    } catch (e) {
+      console.error("카카오 로그아웃 실패", e);
+      // 카카오 로그아웃 실패해도 내 앱 로그아웃은 진행해야 함
+    } finally {
+      // 3. 내 앱의 토큰 삭제 (LocalStorage 클리어)
+      // authApi.logout() 안에 removeItem 로직이 다 들어있으므로 이것만 호출하면 됨
+      if (authApi && typeof authApi.logout === 'function') {
+        authApi.logout();
+      } else {
+        // 혹시 authApi에 logout이 없다면 직접 삭제
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('authTokens');
+      }
 
-  const handleLogout = () => {
-    // 1. 로컬 스토리지에서 토큰 삭제 (authApi.logout 사용)
-    // 만약 authApi에 logout이 없다면 localStorage.removeItem('accessToken') 등을 직접 하셔도 됩니다.
-    if (authApi.logout) {
-      authApi.logout(); 
-    } else {
-      // 혹시 authApi에 logout을 아직 추가 안 하셨다면 임시로 이렇게라도 지워야 합니다.
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('authTokens');
+      // 4. 로그인 페이지로 이동 (새로고침하여 상태 초기화)
+      window.location.href = '/login';
     }
-    
-    // 2. 로그인 페이지로 이동
-    // replace를 써야 뒤로가기를 눌렀을 때 다시 로그인된 화면으로 안 옵니다.
-    router.replace('/login');
-    
-    // (선택사항) 확실하게 새로고침을 하고 싶다면 아래 주석을 해제하세요.
-    // window.location.href = '/login';
   };
 
   return (

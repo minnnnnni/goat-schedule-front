@@ -48,6 +48,8 @@ function logout() {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('authTokens');
+    // 최근 로그아웃 플래그를 세션 스토리지에 남겨서 바로 재로그인할 때 홈으로 리다이렉트되지 않도록 함
+    sessionStorage.setItem('recentLogout', '1');
   } catch (e) {
     /* ignore */
   }
@@ -55,7 +57,6 @@ function logout() {
 
 /**
  * refreshAccessToken
- * [수정 2] 백엔드 명세에 맞춰 엔드포인트 변경 (/auth/refresh -> /auth/refresh-token)
  */
 export async function refreshAccessToken(): Promise<boolean> {
   const refreshToken = getRefreshToken();

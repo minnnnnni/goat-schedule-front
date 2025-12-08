@@ -32,7 +32,8 @@ export default function LoginPage() {
       // [핵심] 백엔드 서버의 인증 주소로 리다이렉트
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).Kakao.Auth.authorize({ 
-       redirectUri: `http://3.39.193.214:8080/api/auth/kakao` 
+       redirectUri: `http://3.39.193.214:8080/api/auth/kakao`,
+       prompts: 'login'
         });
     } catch (e) {
       console.error("kakaoLogin error", e);
